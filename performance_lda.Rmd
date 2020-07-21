@@ -14,9 +14,12 @@ library(stm)
 library(quanteda)
 library(ggplot2)
 library(readr)
+set.seed(2020)
 ```
 
-## Code Setup
+## Data Setup
+
+This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale. 
 
 ```{r coding setup}
 job_perf <- read_csv("~/ari2_07_21.csv")
@@ -26,19 +29,17 @@ cols <- c('STEM', 'ITEM')
 job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
 
 job_perf <- job_perf %>%
-  group_by(CITATION) %>%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
   summarise(scale = paste0(scale, collapse = " "))
 ```
 
-## Topic Model for 5 Topics
+## Pre-Processing
+These are the cleaning and pre-processing steps. To start with, I left all words in and only removed numbers and punctuation. Stemming also occurs in this step. 
 
-This has no stopwords removed. 
-
-
-```{r creating the topic model}
-processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE,
+```{r pre-processing the text}
+processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
-                                 removepunctuation = TRUE, ucp = FALSE, stem = FALSE,
+                                 removepunctuation = TRUE, ucp = TRUE, stem = TRUE,
                                  wordLengths = c(0, Inf), sparselevel = 1, language = "en",
                                  verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
                                  customstopwords = "na", custompunctuation = NULL, v1 = FALSE)
@@ -47,25 +48,74 @@ out.scale <- prepDocuments(processed.scale$documents, vocab = processed.scale$vo
                            meta = processed.scale$meta, lower.thresh = 0, upper.thresh = Inf, 
                            verbose = FALSE)
 
-docs.scale <- out.scale$documents
-vocab.scale <- out.scale$vocab
-meta.scale <- out.scale$meta
+```
 
-perfPrevFit5 <- stm(out.scale$documents, vocab = out.scale$vocab, 
-                   K = 5, data = out.scale$meta, init.type = "LDA", max.em.its = 100, 
-                   verbose = FALSE)
+##Choosing number of topics
+
+Choosing the number of topics is not really a science, but the stm package has attempted to provide some guidance and tools for evaluation. 
+
+I think you want a high held-out likelihood, low residuals, and a combination of high semantic coherence and high exclusivity. The authors of the stm paper use exclusiviety in conjunction with semantic coherence: 
+
+"Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words, so you want to look at both semantic coherence and exclusivity of words to topics. It’s a tradeoff."" 
+
+``` {r choosing number of topics}
+#Any number of topics > 12 is giving an error because of current number of documents (12)
+
+kresult <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA", 
+                   K = c(3, 4, 5, 6, 7, 8, 9, 10, 11), seed = 2020, data = out.scale$meta, verbose = FALSE) 
+plot(kresult)
+
+kresult$results %>%
+  select(K, exclus, semcoh) %>%
+  filter(K %in% c(3, 4, 5, 6, 7, 8, 9, 10, 11)) %>%
+  unnest(cols = c(K, exclus, semcoh)) %>%
+  mutate(K = as.factor(K)) %>%
+  ggplot(aes(semcoh, exclus, color = K)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(x = "Semantic coherence",
+       y = "Exclusivity",
+       title = "Comparing exclusivity and semantic coherence")
+
+```
+I chose 5 topics based upon the run and data I had on 7/21. 
+
+##Fittting the model
+
+This step is important because I am using the LDA initialization. In the paper, the authors suggest using a Spectral initialization instead of LDA. Spectral is based on LDA but different in the way it starts the model. The authors believe the spectral model is more effective, but I choose LDA because it is what other DSPG projects have used. 
+
+This step runs multiple potential models and "recommends" one based on exclusivity and semantic coherence. 
+
+``` {r fitting the model}
+
+modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 5,
+                          max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
+                          seed = 2020, verbose = FALSE)
+plotModels(modelSelect)
+
+perf_model <- modelSelect$runout[[2]] 
 
 ```
 
+
+
 ##Visualizations of the Topic Model
 
-``` {r topic model outputs}
-labelTopics(perfPrevFit5)
+Word Descriptions from the STM paper: 
+"The function by default prints several different types of word profiles, including highest probability words and FREX words. FREX weights words by their overall frequency and how exclusive they are to the
+topic...Lift weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics...Similar to lift, score divides the log frequency of the word in the topic by the log frequency of the word in other topics."
 
-mod.out.corr.5 <- topicCorr(perfPrevFit5)
-plot(mod.out.corr.5)
 
-plot(perfPrevFit5, type = "summary", xlim = c(0, 1), labeltype = "frex")
+``` {r 7 topics model outputs}
+labelTopics(perf_model)
+
+topicQuality(perf_model, out.scale$documents)
+
+mod.out.corr <- topicCorr(perf_model)
+plot(mod.out.corr)
+
+plot(perf_model, type = "summary", xlim = c(0, 1), labeltype = "frex", n = 5)
+
+findThoughts(perf_model, texts = job_perf$SCALE_NAME)
 
 wordclouds <- function(model, topic) {
   cloud(model, topic = topic)
@@ -73,7 +123,8 @@ wordclouds <- function(model, topic) {
 
 topicnum <- 1:5
 for (i in topicnum) {
-  wordclouds(perfPrevFit5, i)
+  wordclouds(perf_model, i)
 }
 ```
 
+##The End

@@ -13,7 +13,7 @@ cols <- c('STEM', 'ITEM')
 job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
 
 job_perf <- job_perf %>%
-  group_by(CITATION) %>%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
   summarise(scale = paste0(scale, collapse = " "))
 
 #STM Model
@@ -32,12 +32,16 @@ vocab.scale <- out.scale$vocab
 meta.scale <- out.scale$meta
 
 perfSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 5,
-                          max.em.its = 100, init.type = "LDA")
+                          max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA",
+                          seed = 2020)
 plotModels(perfSelect)
+selectedmodel <- perfSelect$runout[[4]]
 
-storage <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA", K = c(5, 10))
+kresult <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA",
+                   K = c(5, 8, 10), seed = 2020, data = out.scale$meta)
+plot(kresult)
 
-perfPrevFit <- stm(out.scale$documents, vocab = out.scale$vocab,
+perfPrevFit2 <- stm(out.scale$documents, vocab = out.scale$vocab,
                    K = 5, data = out.scale$meta, init.type = "LDA", max.em.its = 100)
 
 topicQuality(perfPrevFit, out.scale$documents)
