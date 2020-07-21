@@ -1,0 +1,79 @@
+---
+title: "Job Performance: LDA Topic Modeling"
+author: "Liz Miller"
+date: "7/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+library(stm)
+library(quanteda)
+library(ggplot2)
+library(readr)
+```
+
+## Code Setup
+
+```{r coding setup}
+job_perf <- read_csv("~/ari2_07_21.csv")
+
+#Grouping by scale source/citation if we want to consider texts as documents
+cols <- c('STEM', 'ITEM')
+job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+
+job_perf <- job_perf %>%
+  group_by(CITATION) %>%
+  summarise(scale = paste0(scale, collapse = " "))
+```
+
+## Topic Model for 5 Topics
+
+This has no stopwords removed. 
+
+
+```{r creating the topic model}
+processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE,
+                                 removestopwords = FALSE, removenumbers = TRUE,
+                                 removepunctuation = TRUE, ucp = FALSE, stem = FALSE,
+                                 wordLengths = c(0, Inf), sparselevel = 1, language = "en",
+                                 verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
+                                 customstopwords = "na", custompunctuation = NULL, v1 = FALSE)
+
+out.scale <- prepDocuments(processed.scale$documents, vocab = processed.scale$vocab,
+                           meta = processed.scale$meta, lower.thresh = 0, upper.thresh = Inf, 
+                           verbose = FALSE)
+
+docs.scale <- out.scale$documents
+vocab.scale <- out.scale$vocab
+meta.scale <- out.scale$meta
+
+perfPrevFit5 <- stm(out.scale$documents, vocab = out.scale$vocab, 
+                   K = 5, data = out.scale$meta, init.type = "LDA", max.em.its = 100, 
+                   verbose = FALSE)
+
+```
+
+##Visualizations of the Topic Model
+
+``` {r topic model outputs}
+labelTopics(perfPrevFit5)
+
+mod.out.corr.5 <- topicCorr(perfPrevFit5)
+plot(mod.out.corr.5)
+
+plot(perfPrevFit5, type = "summary", xlim = c(0, 1), labeltype = "frex")
+
+wordclouds <- function(model, topic) {
+  cloud(model, topic = topic)
+}
+
+topicnum <- 1:5
+for (i in topicnum) {
+  wordclouds(perfPrevFit5, i)
+}
+```
+

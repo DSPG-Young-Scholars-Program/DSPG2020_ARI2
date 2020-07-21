@@ -4,6 +4,7 @@ library(tidytext)
 library(stm)
 library(quanteda)
 library(ggplot2)
+library(readtext) ##cannot get readtext package to install because library(pdftools) won't install
 
 job_perf <- read.csv("/project/class/bii_sdad_dspg/uva/dod_ari2")
 
