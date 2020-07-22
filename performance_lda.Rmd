@@ -27,6 +27,7 @@ job_perf <- read_csv("~/ari2_07_21.csv")
 #Grouping by scale source/citation if we want to consider texts as documents
 cols <- c('STEM', 'ITEM')
 job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+job_perf$scale <- gsub("NA",' ', job_perf$scale)
 
 job_perf <- job_perf %>%
   group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
@@ -37,12 +38,15 @@ job_perf <- job_perf %>%
 These are the cleaning and pre-processing steps. To start with, I left all words in and only removed numbers and punctuation. Stemming also occurs in this step. 
 
 ```{r pre-processing the text}
+
+stop.words <- c("the", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "to", "like", "are", "from")
+
 processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
                                  removepunctuation = TRUE, ucp = TRUE, stem = TRUE,
                                  wordLengths = c(0, Inf), sparselevel = 1, language = "en",
                                  verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
-                                 customstopwords = "na", custompunctuation = NULL, v1 = FALSE)
+                                 customstopwords = stop.words, custompunctuation = NULL, v1 = FALSE)
 
 out.scale <- prepDocuments(processed.scale$documents, vocab = processed.scale$vocab,
                            meta = processed.scale$meta, lower.thresh = 0, upper.thresh = Inf, 
@@ -70,14 +74,15 @@ kresult$results %>%
   filter(K %in% c(3, 4, 5, 6, 7, 8, 9, 10, 11)) %>%
   unnest(cols = c(K, exclus, semcoh)) %>%
   mutate(K = as.factor(K)) %>%
-  ggplot(aes(semcoh, exclus, color = K)) +
-  geom_point(size = 2, alpha = 0.7) +
+  ggplot(aes(semcoh, exclus, colour = K)) +
+  geom_point(size = .01, alpha = 0.7) +
+  geom_text(aes(label = K)) +
   labs(x = "Semantic coherence",
        y = "Exclusivity",
        title = "Comparing exclusivity and semantic coherence")
 
 ```
-I chose 5 topics based upon the run and data I had on 7/21. 
+I chose 7 topics based upon the run and data I had on 7/22. 
 
 ##Fittting the model
 
@@ -92,7 +97,7 @@ modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 5,
                           seed = 2020, verbose = FALSE)
 plotModels(modelSelect)
 
-perf_model <- modelSelect$runout[[2]] 
+perf_model <- modelSelect$runout[[3]] 
 
 ```
 

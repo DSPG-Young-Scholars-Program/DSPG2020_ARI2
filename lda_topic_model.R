@@ -6,7 +6,7 @@ library(quanteda)
 library(ggplot2)
 library(readr)
 
-job_perf <- read_csv("~/ari2_07_21.csv")
+job_perf <- read_csv("/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv")
 
 #Grouping by scale source/citation if we want to consider texts as documents instead of individual scale items
 cols <- c('STEM', 'ITEM')
