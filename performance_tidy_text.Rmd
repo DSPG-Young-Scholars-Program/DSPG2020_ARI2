@@ -1,0 +1,94 @@
+---
+title: "Job Performance: Tidy Text"
+author: "Liz Miller"
+date: "7/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+## Tidy Text Analysis for Job Performance Scales
+
+
+```{r subsetting the data, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+library(stm)
+library(quanteda)
+library(ggplot2)
+library(readr)
+library(stringr)
+library(reshape2)
+library(wordcloud)
+
+job_perf <- read_csv("~/ari2_07_21.csv")
+
+cols <- c('STEM', 'ITEM')
+job_perf$scale <- 
+  apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+job_perf$scale <- gsub("NA",' ', job_perf$scale)
+
+```
+
+##Word Frequency in Scales
+
+```{r process for turning the text into a tidy format, message=FALSE, warning=FALSE}
+#Tidying the data
+
+tidy_perf <- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
+data(stop_words)
+
+tidy_perf <- tidy_perf %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  count(source, word, sort = TRUE) %>% 
+  filter(word != "na")
+
+tidy_perf %>%
+  filter(n > 5) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = source)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+  ggtitle("Highest Frequency Words in Job Performance Scale")
+```
+
+##Sentiment Analysis with Job Performance Scales
+
+```{r something } 
+
+perf_sentiment <- tidy_perf %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+perf_sentiment %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip()
+
+tidy_perf %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("#1b2a49", "#00909e"), 
+                   max.words = 100)
+
+```
+
+Done
