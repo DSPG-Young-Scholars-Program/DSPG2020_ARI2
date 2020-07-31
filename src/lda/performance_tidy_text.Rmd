@@ -42,23 +42,23 @@ job_perf$scale <- gsub("NA",' ', job_perf$scale)
 ```{r process for turning the text into a tidy format, message=FALSE, warning=FALSE}
 #Tidying the data
 
-tidy_perf <- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
+tidy_perf <- tibble(domain = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
 data(stop_words)
 
 tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
-  count(source, word, sort = TRUE) %>% 
-  filter(word != "na")
-
+  count(domain, word, sort = TRUE)
+  
 tidy_perf %>%
+  count(word, sort = TRUE) %>%
   filter(n > 5) %>%
   mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word, n, fill = source)) +
-  geom_col() +
+  ggplot(aes(word, n, fill = word)) +
+  geom_col(show.legend = FALSE) +
   xlab(NULL) +
   coord_flip() +
-  ggtitle("Highest Frequency Words in Job Performance Scale")
+  ggtitle("Highest Frequency Words in Job Performance Scales")
 ```
 
 ##Sentiment Analysis with Job Performance Scales
