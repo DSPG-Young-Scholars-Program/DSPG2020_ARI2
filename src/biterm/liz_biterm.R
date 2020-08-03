@@ -6,10 +6,7 @@ library(textplot)
 library(ggraph)
 library(concaveman)
 
-<<<<<<< Updated upstream
-library(readxl)
-=======
->>>>>>> Stashed changes
+
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
                        sheet = "Performance Items")
 

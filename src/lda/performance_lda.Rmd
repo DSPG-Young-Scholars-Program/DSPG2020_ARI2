@@ -14,6 +14,7 @@ library(stm)
 library(quanteda)
 library(ggplot2)
 library(readr)
+library(readxl)
 set.seed(2020)
 ```
 
@@ -22,7 +23,11 @@ set.seed(2020)
 This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale. 
 
 ```{r coding setup}
-job_perf <- read_csv("~/ari2_07_21.csv")
+
+job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+
+job_perf <- job_perf %>%
+  filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
 
 #Grouping by scale source/citation if we want to consider texts as documents
 cols <- c('STEM', 'ITEM')
@@ -39,11 +44,11 @@ These are the cleaning and pre-processing steps. To start with, I left all words
 
 ```{r pre-processing the text}
 
-stop.words <- c("the", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "to", "like", "are", "from")
+stop.words <- c("the", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "to", "like", "are", "from", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital")
 
 processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
-                                 removepunctuation = TRUE, ucp = TRUE, stem = TRUE,
+                                 removepunctuation = TRUE, ucp = TRUE, stem = FALSE,
                                  wordLengths = c(0, Inf), sparselevel = 1, language = "en",
                                  verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
                                  customstopwords = stop.words, custompunctuation = NULL, v1 = FALSE)

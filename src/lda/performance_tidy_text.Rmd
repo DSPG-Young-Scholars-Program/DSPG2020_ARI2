@@ -28,14 +28,41 @@ library(stringr)
 library(reshape2)
 library(wordcloud)
 
-job_perf <- read_csv("~/ari2_07_21.csv")
+job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
+soldier_effective <- job_perf %>%
+  filter(CITATION == "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
+
+job_perf <- job_perf %>%
+  filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
+
+#Grouping by scale source/citation if we want to consider texts as documents
 cols <- c('STEM', 'ITEM')
-job_perf$scale <- 
-  apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
 job_perf$scale <- gsub("NA",' ', job_perf$scale)
 
+job_perf <- job_perf %>%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
+  summarise(scale = paste0(scale, collapse = " "))
 ```
+
+## Basic overview of dataset
+
+``` {r eda}
+
+job_perf %>%
+  ggplot(aes(x = YEAR)) +
+  geom_histogram(binwidth = 4, fill = "blue") +
+  ggtitle("Scale Years")
+
+job_perf %>%
+  ggplot(aes(x = SOURCE_DOMAIN, fill = as.factor(SOURCE_DOMAIN))) +
+  geom_bar(show.legend = FALSE) +
+  ggtitle("Source of Scales")
+
+```
+
+
 
 ##Word Frequency in Scales
 
@@ -63,7 +90,7 @@ tidy_perf %>%
 
 ##Sentiment Analysis with Job Performance Scales
 
-```{r something } 
+```{r sentiment analysis in scales} 
 
 perf_sentiment <- tidy_perf %>%
   inner_join(get_sentiments("bing")) %>%
