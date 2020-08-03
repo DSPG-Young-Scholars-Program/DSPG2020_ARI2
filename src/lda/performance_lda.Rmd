@@ -1,5 +1,7 @@
 ---
-title: "Job Performance: LDA Topic Modeling"
+title: "Job Performance Scales: LDA Topic Modeling"
+description: "This page demonstrates an LDA Topic Modeling approach to our corpus."
+tags: ["R", "text analysis", "topic models", "LDA"]
 author: "Liz Miller"
 date: "7/21/2020"
 output: html_document
@@ -14,6 +16,7 @@ library(stm)
 library(quanteda)
 library(ggplot2)
 library(readr)
+library(readxl)
 set.seed(2020)
 ```
 
@@ -21,8 +24,12 @@ set.seed(2020)
 
 This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale. 
 
-```{r coding setup}
-job_perf <- read_csv("~/ari2_07_21.csv")
+```{r read_data}
+
+job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+
+job_perf <- job_perf %>%
+  filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
 
 #Grouping by scale source/citation if we want to consider texts as documents
 cols <- c('STEM', 'ITEM')
@@ -37,13 +44,13 @@ job_perf <- job_perf %>%
 ## Pre-Processing
 These are the cleaning and pre-processing steps. To start with, I left all words in and only removed numbers and punctuation. Stemming also occurs in this step. 
 
-```{r pre-processing the text}
+```{r pre-processing}
 
-stop.words <- c("the", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "to", "like", "are", "from")
+stop.words <- c("the", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "to", "like", "are", "from", "do", "of", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital")
 
 processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
-                                 removepunctuation = TRUE, ucp = TRUE, stem = TRUE,
+                                 removepunctuation = TRUE, ucp = TRUE, stem = FALSE,
                                  wordLengths = c(0, Inf), sparselevel = 1, language = "en",
                                  verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
                                  customstopwords = stop.words, custompunctuation = NULL, v1 = FALSE)
@@ -62,16 +69,15 @@ I think you want a high held-out likelihood, low residuals, and a combination of
 
 "Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words, so you want to look at both semantic coherence and exclusivity of words to topics. It’s a tradeoff."" 
 
-``` {r choosing number of topics}
-#Any number of topics > 12 is giving an error because of current number of documents (12)
+``` {r kresult}
 
 kresult <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA", 
-                   K = c(3, 4, 5, 6, 7, 8, 9, 10, 11), seed = 2020, data = out.scale$meta, verbose = FALSE) 
+                   K = c(6, 8, 10, 12, 14, 16, 18, 20, 22), seed = 2020, data = out.scale$meta, verbose = FALSE) 
 plot(kresult)
 
 kresult$results %>%
   select(K, exclus, semcoh) %>%
-  filter(K %in% c(3, 4, 5, 6, 7, 8, 9, 10, 11)) %>%
+  filter(K %in% c(6, 8, 10, 12, 14, 16, 18, 20, 22)) %>%
   unnest(cols = c(K, exclus, semcoh)) %>%
   mutate(K = as.factor(K)) %>%
   ggplot(aes(semcoh, exclus, colour = K)) +
@@ -90,14 +96,14 @@ This step is important because I am using the LDA initialization. In the paper, 
 
 This step runs multiple potential models and "recommends" one based on exclusivity and semantic coherence. 
 
-``` {r fitting the model}
+``` {r model_select}
 
-modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 5,
+modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 14,
                           max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
                           seed = 2020, verbose = FALSE)
 plotModels(modelSelect)
 
-perf_model <- modelSelect$runout[[3]] 
+perf_model <- modelSelect$runout[[2]] 
 
 ```
 
@@ -110,7 +116,7 @@ Word Descriptions from the STM paper:
 topic...Lift weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics...Similar to lift, score divides the log frequency of the word in the topic by the log frequency of the word in other topics."
 
 
-``` {r 7 topics model outputs}
+``` {r model_output}
 labelTopics(perf_model)
 
 topicQuality(perf_model, out.scale$documents)
@@ -126,7 +132,7 @@ wordclouds <- function(model, topic) {
   cloud(model, topic = topic)
 }
 
-topicnum <- 1:5
+topicnum <- 1:14
 for (i in topicnum) {
   wordclouds(perf_model, i)
 }
