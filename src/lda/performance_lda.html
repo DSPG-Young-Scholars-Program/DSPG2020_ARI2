@@ -1,5 +1,7 @@
 ---
-title: "Job Performance: LDA Topic Modeling"
+title: "Job Performance Scales: LDA Topic Modeling"
+description: "This page demonstrates an LDA Topic Modeling approach to our corpus."
+tags: ["R", "text analysis", "topic models", "LDA"]
 author: "Liz Miller"
 date: "7/21/2020"
 output: html_document
@@ -10,18 +12,12 @@ output: html_document
 <div id="data-setup" class="section level2">
 <h2>Data Setup</h2>
 <p>This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale.</p>
-<pre class="r"><code>job_perf &lt;- read_csv(&quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&quot;)</code></pre>
-<pre><code>## Warning: Missing column names filled in: &#39;X19&#39; [19], &#39;X20&#39; [20], &#39;X21&#39; [21]</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   NUM_ITEMS = col_double(),
-##   YEAR = col_double(),
-##   SOURCE_DOCUMENT = col_logical(),
-##   X21 = col_double()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>#Grouping by scale source/citation if we want to consider texts as documents
+<pre class="r"><code>job_perf &lt;- read_excel(&quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&quot;,  sheet = &quot;Performance Items&quot;)
+
+job_perf &lt;- job_perf %&gt;%
+  filter(CITATION != &quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&quot;)
+
+#Grouping by scale source/citation if we want to consider texts as documents
 cols &lt;- c(&#39;STEM&#39;, &#39;ITEM&#39;)
 job_perf$scale &lt;- apply( job_perf[ , cols ], 1 , paste, collapse = &quot; &quot;)
 job_perf$scale &lt;- gsub(&quot;NA&quot;,&#39; &#39;, job_perf$scale)
@@ -34,11 +30,11 @@ job_perf &lt;- job_perf %&gt;%
 <div id="pre-processing" class="section level2">
 <h2>Pre-Processing</h2>
 <p>These are the cleaning and pre-processing steps. To start with, I left all words in and only removed numbers and punctuation. Stemming also occurs in this step.</p>
-<pre class="r"><code>stop.words &lt;- c(&quot;the&quot;, &quot;a&quot;, &quot;an&quot;, &quot;for&quot;, &quot;and&quot;, &quot;nor&quot;, &quot;but&quot;, &quot;or&quot;, &quot;yet&quot;, &quot;so&quot;, &quot;either&quot;, &quot;or&quot;, &quot;both&quot;, &quot;if&quot;, &quot;as&quot;, &quot;than&quot;, &quot;how&quot;, &quot;that&quot;, &quot;whatever&quot;, &quot;which&quot;, &quot;whichever&quot;, &quot;where&quot;, &quot;wherever&quot;, &quot;it&quot;, &quot;at&quot;, &quot;to&quot;, &quot;like&quot;, &quot;are&quot;, &quot;from&quot;)
+<pre class="r"><code>stop.words &lt;- c(&quot;the&quot;, &quot;a&quot;, &quot;an&quot;, &quot;for&quot;, &quot;and&quot;, &quot;nor&quot;, &quot;but&quot;, &quot;or&quot;, &quot;yet&quot;, &quot;so&quot;, &quot;either&quot;, &quot;or&quot;, &quot;both&quot;, &quot;if&quot;, &quot;as&quot;, &quot;than&quot;, &quot;how&quot;, &quot;that&quot;, &quot;whatever&quot;, &quot;which&quot;, &quot;whichever&quot;, &quot;where&quot;, &quot;wherever&quot;, &quot;it&quot;, &quot;at&quot;, &quot;to&quot;, &quot;like&quot;, &quot;are&quot;, &quot;from&quot;, &quot;do&quot;, &quot;of&quot;, &quot;andor&quot;, &quot;goran&quot;, &quot;nurse&quot;, &quot;nursing&quot;, &quot;nurses&quot;, &quot;patient&quot;, &quot;hospital&quot;)
 
 processed.scale &lt;- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
-                                 removepunctuation = TRUE, ucp = TRUE, stem = TRUE,
+                                 removepunctuation = TRUE, ucp = TRUE, stem = FALSE,
                                  wordLengths = c(0, Inf), sparselevel = 1, language = &quot;en&quot;,
                                  verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
                                  customstopwords = stop.words, custompunctuation = NULL, v1 = FALSE)
@@ -52,15 +48,13 @@ out.scale &lt;- prepDocuments(processed.scale$documents, vocab = processed.scale
 <p>Choosing the number of topics is not really a science, but the stm package has attempted to provide some guidance and tools for evaluation.</p>
 <p>I think you want a high held-out likelihood, low residuals, and a combination of high semantic coherence and high exclusivity. The authors of the stm paper use exclusiviety in conjunction with semantic coherence:</p>
 <p>&quot;Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words, so you want to look at both semantic coherence and exclusivity of words to topics. It’s a tradeoff.&quot;&quot;</p>
-<pre class="r"><code>#Any number of topics &gt; 12 is giving an error because of current number of documents (12)
-
-kresult &lt;- searchK(out.scale$documents, out.scale$vocab, init.type = &quot;LDA&quot;, 
-                   K = c(3, 4, 5, 6, 7, 8, 9, 10, 11), seed = 2020, data = out.scale$meta, verbose = FALSE) 
+<pre class="r"><code>kresult &lt;- searchK(out.scale$documents, out.scale$vocab, init.type = &quot;LDA&quot;, 
+                   K = c(6, 8, 10, 12, 14, 16, 18, 20, 22), seed = 2020, data = out.scale$meta, verbose = FALSE) 
 plot(kresult)</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/choosing%20number%20of%20topics-1.png" width="672" /></p>
+<p><img src="/findings/performance_lda_files/figure-html/kresult-1.png" width="672" /></p>
 <pre class="r"><code>kresult$results %&gt;%
   select(K, exclus, semcoh) %&gt;%
-  filter(K %in% c(3, 4, 5, 6, 7, 8, 9, 10, 11)) %&gt;%
+  filter(K %in% c(6, 8, 10, 12, 14, 16, 18, 20, 22)) %&gt;%
   unnest(cols = c(K, exclus, semcoh)) %&gt;%
   mutate(K = as.factor(K)) %&gt;%
   ggplot(aes(semcoh, exclus, colour = K)) +
@@ -69,13 +63,13 @@ plot(kresult)</code></pre>
   labs(x = &quot;Semantic coherence&quot;,
        y = &quot;Exclusivity&quot;,
        title = &quot;Comparing exclusivity and semantic coherence&quot;)</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/choosing%20number%20of%20topics-2.png" width="672" /> I chose 7 topics based upon the run and data I had on 7/22.</p>
+<p><img src="/findings/performance_lda_files/figure-html/kresult-2.png" width="672" /> I chose 7 topics based upon the run and data I had on 7/22.</p>
 </div>
 <div id="fittting-the-model" class="section level2">
 <h2>Fittting the model</h2>
 <p>This step is important because I am using the LDA initialization. In the paper, the authors suggest using a Spectral initialization instead of LDA. Spectral is based on LDA but different in the way it starts the model. The authors believe the spectral model is more effective, but I choose LDA because it is what other DSPG projects have used.</p>
 <p>This step runs multiple potential models and &quot;recommends&quot; one based on exclusivity and semantic coherence.</p>
-<pre class="r"><code>modelSelect &lt;- selectModel(out.scale$documents, out.scale$vocab, K = 5,
+<pre class="r"><code>modelSelect &lt;- selectModel(out.scale$documents, out.scale$vocab, K = 14,
                           max.em.its = 200, data = out.scale$meta, runs = 20, init.type = &quot;LDA&quot;, 
                           seed = 2020, verbose = FALSE)</code></pre>
 <pre><code>## Casting net 
@@ -105,103 +99,169 @@ plot(kresult)</code></pre>
 ## 3 select model run 
 ## 4 select model run</code></pre>
 <pre class="r"><code>plotModels(modelSelect)</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/fitting%20the%20model-1.png" width="672" /></p>
-<pre class="r"><code>perf_model &lt;- modelSelect$runout[[3]] </code></pre>
+<p><img src="/findings/performance_lda_files/figure-html/model_select-1.png" width="672" /></p>
+<pre class="r"><code>perf_model &lt;- modelSelect$runout[[2]] </code></pre>
 </div>
 <div id="visualizations-of-the-topic-model" class="section level2">
 <h2>Visualizations of the Topic Model</h2>
 <p>Word Descriptions from the STM paper: &quot;The function by default prints several different types of word profiles, including highest probability words and FREX words. FREX weights words by their overall frequency and how exclusive they are to the topic...Lift weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics...Similar to lift, score divides the log frequency of the word in the topic by the log frequency of the word in other topics.&quot;</p>
 <pre class="r"><code>labelTopics(perf_model)</code></pre>
 <pre><code>## Topic 1 Top Words:
-##       Highest Prob: group, my, member, work, explain, with, in 
-##       FREX: member, explain, group, concern, encourag, hesh, hisher 
-##       Lift: member, affect, along, answer, anyon, attent, base 
-##       Score: member, explain, group, concern, encourag, idea, hesh 
+##       Highest Prob: i, my, work, have, in, with, am 
+##       FREX: department, newfoundland, plan, senior, labrador, role, government 
+##       Lift: labrador, newfoundland, abilitis, accepting, acheivements, achieveemnt, agencies 
+##       Score: department, newfoundland, plan, i, labrador, senior, role 
 ## Topic 2 Top Words:
-##       Highest Prob: in, have, work, assign, this, andor, requir 
-##       FREX: andor, team, cowork, fail, complet, assign, activ 
-##       Lift: andor, accolad, account, acquir, act, activ, adequ 
-##       Score: fail, andor, occasion, knowledg, prioriti, activ, demonstr 
+##       Highest Prob: you, your, work, in, with, have, is 
+##       FREX: yourself, caused, you, did, were, felt, during 
+##       Lift: accident, atmosphere, basis, come, disability, failure, miss 
+##       Score: you, your, yourself, caused, past, felt, did 
 ## Topic 3 Top Words:
-##       Highest Prob: work, on, help, well, about, discuss, be 
-##       FREX: work, discuss, know, about, well, help, on 
-##       Lift: know, discuss, opinion, tell, done, find, work 
-##       Score: work, find, tell, by, help, good, be 
+##       Highest Prob: my, job, i, on, is, this, feel 
+##       FREX: chance, feel, this, on, about, is, job 
+##       Lift: steady, administered, againt, ahread, avoided, backs, cheating 
+##       Score: this, chance, feel, about, i, my, job 
 ## Topic 4 Top Words:
-##       Highest Prob: i, my, organ, of, in, this, have 
-##       FREX: am, nurs, profess, now, leav, i, organ 
-##       Lift: agenc, agre, almost, altern, attach, author, becaus 
-##       Score: i, profess, nurs, now, organ, right, leav 
+##       Highest Prob: your, work, you, in, with, group, is 
+##       FREX: occupation, ideal, group, considerations, members, your, relation 
+##       Lift: assign, britain, heshe, indicate, occupation, points, total 
+##       Score: your, you, occupation, group, ideal, following, considerations 
 ## Topic 5 Top Words:
-##       Highest Prob: you, your, in, of, do, job, would 
-##       FREX: you, your, ideal, satisfi, stress, subject, suffici 
-##       Lift: suffici, ideal, accid, affair, afraid, age, around 
-##       Score: you, your, satisfi, ideal, characterist, subject, stress</code></pre>
+##       Highest Prob: my, supervisor, i, me, can, in, company 
+##       FREX: euro, quota, ask, company, supervisor, he, behavior 
+##       Lift: ethnical, grade, salespeople, sell, additional, approves, asks 
+##       Score: supervisor, euro, quota, behavior, selling, customer, ask 
+## Topic 6 Top Words:
+##       Highest Prob: job, you, work, your, in, i, this 
+##       FREX: characteristic, ideally, extent, opportunity, would, much, whether 
+##       Lift: finished, independent, acutal, amoung, arranged, attempts, attract 
+##       Score: you, ideally, characteristic, your, extent, this, would 
+## Topic 7 Top Words:
+##       Highest Prob: in, work, patients, procedures, with, unit, assignments 
+##       FREX: fails, patients, families, improvements, timely, assignments, unit 
+##       Lift: accountability, adapts, developmental, families, helping, improvements, regulations 
+##       Score: patients, unit, program, manner, fails, needs, families 
+## Topic 8 Top Words:
+##       Highest Prob: i, work, my, in, have, im, can 
+##       FREX: im, colleagues, exposed, must, carried, hours, pace 
+##       Lift: carried, adversely, aggression, agreeable, anger, anything, arent 
+##       Score: im, i, exposed, colleagues, carried, must, because 
+## Topic 9 Top Words:
+##       Highest Prob: i, my, organization, would, me, feel, not 
+##       FREX: profession, organization, really, would, leave, who, organizations 
+##       Lift: absence, attached, especially, normally, oriented, absense, absorbed 
+##       Score: organization, would, profession, i, really, now, who 
+## Topic 10 Top Words:
+##       Highest Prob: i, my, in, job, work, you, have 
+##       FREX: workgroup, months, behaviors, past, been, subjected, requires 
+##       Lift: acknowledgement, afffect, asleep, assisted, attend, automated, automation 
+##       Score: workgroup, behaviors, you, months, subjected, past, following 
+## Topic 11 Top Words:
+##       Highest Prob: think, does, well, each, work, describe, following 
+##       FREX: describe, think, phrases, each, words, following, well 
+##       Lift: agreements, annoying, bairly, boring, co-operation, crises, date 
+##       Score: phrases, words, describe, following, each, majority, whom 
+## Topic 12 Top Words:
+##       Highest Prob: work, i, in, things, job, get, about 
+##       FREX: things, take, more, get, was, willing, life 
+##       Lift: worth, show, unemployment, willing, involved, having, only 
+##       Score: life, things, i, was, friends, more, part 
+## Topic 13 Top Words:
+##       Highest Prob: opportunities, your, work, you, my, occur, does 
+##       FREX: occur, opportunities, member, simply, environment, performing, duties 
+##       Lift: interact, member, recognized, asssociated, class, condtions, dead-end 
+##       Score: occur, member, simply, you, your, performing, environment 
+## Topic 14 Top Words:
+##       Highest Prob: i, my, job, am, work, what, in 
+##       FREX: over, am, health, we, objectives, interesting, problem 
+##       Lift: accounts, adjusting, allowed, annual, aspect, contributing, definitely 
+##       Score: i, am, my, modify, accomplish, health, we</code></pre>
 <pre class="r"><code>topicQuality(perf_model, out.scale$documents)</code></pre>
-<pre><code>## [1] -24.79211 -39.80874 -19.53978 -19.95822 -33.64357
-## [1] 9.265158 7.674974 9.886074 8.379468 8.096512</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-1.png" width="672" /></p>
+<pre><code>##  [1] -37.49307 -32.28410 -28.09203 -29.85868 -32.04608 -20.70171 -55.53388
+##  [8] -37.37033 -21.88735 -48.51886 -84.33614 -23.80541 -54.90087 -11.02480
+##  [1] 9.247178 8.413603 9.777831 8.788235 9.259674 9.044334 8.860571 9.221777
+##  [9] 8.597378 9.004477 9.819869 9.802290 9.617331 9.487670</code></pre>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-1.png" width="672" /></p>
 <pre class="r"><code>mod.out.corr &lt;- topicCorr(perf_model)
 plot(mod.out.corr)</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-2.png" width="672" /></p>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-2.png" width="672" /></p>
 <pre class="r"><code>plot(perf_model, type = &quot;summary&quot;, xlim = c(0, 1), labeltype = &quot;frex&quot;, n = 5)</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-3.png" width="672" /></p>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-3.png" width="672" /></p>
 <pre class="r"><code>findThoughts(perf_model, texts = job_perf$SCALE_NAME)</code></pre>
 <pre><code>## 
 ##  Topic 1: 
-##       Empowering Leadership Questionnaire
+##       Work Environment Survey
 ##      The Team KSA Test (15-TKT)
-##      Organizational Commitment Questionnaire (OCQ) 
+##      NA 
 ##  Topic 2: 
-##       HHS PMAP Handbook
-##      NA
+##       NA
+##      WHO Health and Performance Questionnaire
 ##      NA 
 ##  Topic 3: 
-##       Empowering Leadership Questionnaire
-##      The Team KSA Test (15-TKT)
-##      work attitude measures of trust 
+##       Minnesota Satisfaction Questionnaire
+##      Job Satisfaction Survey
+##      NA 
 ##  Topic 4: 
-##       Commitment to Organizations and Occupations:
-##      Worker Role Self-Assessment Instrument.
-##      Organizational Commitment Questionnaire (OCQ) 
+##       Psychological and Social Factors at Work
+##      Empowering Leadership Questionnaire
+##      Work Organization Assessment Questionnaire 
 ##  Topic 5: 
 ##       NA
+##      NA
+##      NA 
+##  Topic 6: 
+##       Job Characteristics Inventory
 ##      work attitude measures of trust
-##      NA</code></pre>
+##      NA 
+##  Topic 7: 
+##       NA
+##      HHS PMAP Handbook
+##      NA 
+##  Topic 8: 
+##       Working Conditions and Control Questionnaire
+##      NA
+##      Standford Presenteeism Scale 
+##  Topic 9: 
+##       Commitment to Organizations and Occupations:
+##      NA
+##      Organizational Commitment Questionnaire 
+##  Topic 10: 
+##       People at Work Survey
+##      Stress &amp; Satisfaction Offset Score
+##      Multimethod Job Design Questionnaire 
+##  Topic 11: 
+##       NA
+##      NA
+##      NA 
+##  Topic 12: 
+##       NA
+##      NA
+##      Role-Based Performance Scale 
+##  Topic 13: 
+##       NA
+##      Worker Opinion Survey
+##      NA 
+##  Topic 14: 
+##       NA
+##      NA
+##      Job Ambiguity</code></pre>
 <pre class="r"><code>wordclouds &lt;- function(model, topic) {
   cloud(model, topic = topic)
 }
 
-topicnum &lt;- 1:5
+topicnum &lt;- 1:14
 for (i in topicnum) {
   wordclouds(perf_model, i)
 }</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-4.png" width="672" /></p>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-4.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-5.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-6.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-7.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-8.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-9.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-10.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-11.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-12.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-13.png" width="672" /></p>
 <pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : this could not be fit on page. It will not be plotted.</code></pre>
+## max.words, : phrases could not be fit on page. It will not be plotted.</code></pre>
 <pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : person could not be fit on page. It will not be plotted.</code></pre>
+## max.words, : following could not be fit on page. It will not be plotted.</code></pre>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-14.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-15.png" width="672" /></p>
 <pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : occasion could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : improv could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : teammat could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : prioriti could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : andor could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : complet could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : activ could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : specif could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : consist could not be fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud::wordcloud(words = vocab, freq = vec, max.words =
-## max.words, : goal could not be fit on page. It will not be plotted.</code></pre>
-<p><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-5.png" width="672" /><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-6.png" width="672" /><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-7.png" width="672" /><img src="/findings/performance_lda_files/figure-html/7%20topics%20model%20outputs-8.png" width="672" /></p>
+## max.words, : work could not be fit on page. It will not be plotted.</code></pre>
+<p><img src="/findings/performance_lda_files/figure-html/model_output-16.png" width="672" /><img src="/findings/performance_lda_files/figure-html/model_output-17.png" width="672" /></p>
 </div>
 <div id="the-end" class="section level2">
 <h2>The End</h2>

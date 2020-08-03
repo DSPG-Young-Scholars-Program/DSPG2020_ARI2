@@ -38,22 +38,22 @@
     </item>
     
     <item>
-      <title>Job Performance: LDA Topic Modeling</title>
+      <title>Exploring Job Performance Scales</title>
+      <link>/findings/performance_tidy_text/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_tidy_text/</guid>
+      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) library(readxl) job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) soldier_effective &amp;lt;- job_perf %&amp;gt;% filter(CITATION == &amp;quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp;amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION !</description>
+    </item>
+    
+    <item>
+      <title>Job Performance Scales: LDA Topic Modeling</title>
       <link>/findings/performance_lda/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/performance_lda/</guid>
       <description>Data Setup This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale.
-job_perf &amp;lt;- read_csv(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&amp;quot;) ## Warning: Missing column names filled in: &amp;#39;X19&amp;#39; [19], &amp;#39;X20&amp;#39; [20], &amp;#39;X21&amp;#39; [21] ## Parsed with column specification: ## cols( ## .</description>
-    </item>
-    
-    <item>
-      <title>Job Performance: Tidy Text</title>
-      <link>/findings/performance_tidy_text/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/performance_tidy_text/</guid>
-      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) job_perf &amp;lt;- read_csv(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&amp;quot;) cols &amp;lt;- c(&amp;#39;STEM&amp;#39;, &amp;#39;ITEM&amp;#39;) job_perf$scale &amp;lt;- apply( job_perf[ , cols ], 1 , paste, collapse = &amp;quot; &amp;quot;) job_perf$scale &amp;lt;- gsub(&amp;quot;NA&amp;quot;,&amp;#39; &amp;#39;, job_perf$scale)  Word Frequency in Scales #Tidying the data tidy_perf &amp;lt;- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale) data(stop_words) tidy_perf &amp;lt;- tidy_perf %&amp;gt;% unnest_tokens(word, text) %&amp;gt;% anti_join(stop_words) %&amp;gt;% count(source, word, sort = TRUE) %&amp;gt;% filter(word !</description>
+job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION != &amp;quot;Borman, W.</description>
     </item>
     
   </channel>

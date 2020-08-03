@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Job Performance: Tidy Text</title>
-        <link rel="canonical" href="../../findings/performance_tidy_text/">
+        <title>Exploring Job Performance Scales</title>
+        <link rel="canonical" href="/findings/performance_tidy_text/">
         <style>
 
     html body {
@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
 
 
-<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
 
@@ -101,26 +101,26 @@ $(document).ready(function(){
         
 
     
-    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
-    <link rel="manifest" href="../../site.webmanifest">
-    <link rel="mask-icon" href="../../img/favicon/safari-pinned-tab.svg" color="#000000">
-    <link rel="shortcut icon" href="../../img/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico">
     <meta name="msapplication-TileColor" content="#2b5797">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     
     
     
-    <meta property="og:title" content="Job Performance: Tidy Text">
+    <meta property="og:title" content="Exploring Job Performance Scales">
     <meta property="og:type" content="article">
       
       <meta name="twitter:card" content="summary">
       <meta name="twitter:image" content="/favicon/uva-dspg-logo.jpg" >
       
-    <meta property="description" content="">
-    <meta property="og:description" content="">
+    <meta property="description" content="An examination of our collected job performance scales">
+    <meta property="og:description" content="An examination of our collected job performance scales">
     
     <meta name="twitter:creator" content="">
     <meta name="twitter:site" content="">
@@ -138,7 +138,7 @@ $(document).ready(function(){
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand visible-xs" href="#">Job Performance: Tidy Text</a>
+                    <a class="navbar-brand visible-xs" href="#">Exploring Job Performance Scales</a>
                     <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -149,15 +149,15 @@ $(document).ready(function(){
                     
                         <ul class="nav navbar-nav">
                             
-                                <li><a href="../../">Home</a></li>
+                                <li><a href="/">Home</a></li>
                             
-                                <li><a href="../../overview/">Overview</a></li>
+                                <li><a href="/overview/">Overview</a></li>
                             
-                                <li><a href="../../methods/">Data &amp; Methods</a></li>
+                                <li><a href="/methods/">Data &amp; Methods</a></li>
                             
-                                <li><a href="../../findings/">Findings</a></li>
+                                <li><a href="/findings/">Findings</a></li>
                             
-                                <li><a href="../../team/">Team</a></li>
+                                <li><a href="/team/">Team</a></li>
                             
                         </ul>
                     
@@ -189,15 +189,31 @@ $(document).ready(function(){
     
 
     
-    
+      
       
     
 
-    <h4><a href="../../findings/performance_tidy_text/">Job Performance: Tidy Text</a></h4>
+    <h4><a href="/findings/performance_tidy_text/">Exploring Job Performance Scales</a></h4>
     
-    <h5></h5>
+    <h5>An examination of our collected job performance scales</h5>
 
     
+    
+    <a href="/tags/r">
+        <kbd class="item-tag"> R </kbd>
+    </a>
+    
+    <a href="/tags/text-analysis">
+        <kbd class="item-tag"> text analysis </kbd>
+    </a>
+    
+    <a href="/tags/tidytext">
+        <kbd class="item-tag"> tidytext </kbd>
+    </a>
+    
+    <a href="/tags/sentiment">
+        <kbd class="item-tag"> sentiment </kbd>
+    </a>
     
 
 </div>
@@ -218,36 +234,60 @@ library(readr)
 library(stringr)
 library(reshape2)
 library(wordcloud)
+library(readxl)
 
-job_perf &lt;- read_csv(&quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&quot;)
+job_perf &lt;- read_excel(&quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&quot;,  sheet = &quot;Performance Items&quot;)
 
+soldier_effective &lt;- job_perf %&gt;%
+  filter(CITATION == &quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&quot;)
+
+job_perf &lt;- job_perf %&gt;%
+  filter(CITATION != &quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&quot;)
+
+#Grouping by scale source/citation if we want to consider texts as documents
 cols &lt;- c(&#39;STEM&#39;, &#39;ITEM&#39;)
-job_perf$scale &lt;- 
-  apply( job_perf[ , cols ], 1 , paste, collapse = &quot; &quot;)
-job_perf$scale &lt;- gsub(&quot;NA&quot;,&#39; &#39;, job_perf$scale)</code></pre>
+job_perf$scale &lt;- apply( job_perf[ , cols ], 1 , paste, collapse = &quot; &quot;)
+job_perf$scale &lt;- gsub(&quot;NA&quot;,&#39; &#39;, job_perf$scale)
+
+job_perf &lt;- job_perf %&gt;%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %&gt;%
+  summarise(scale = paste0(scale, collapse = &quot; &quot;))</code></pre>
+</div>
+<div id="basic-overview-of-dataset" class="section level2">
+<h2>Basic overview of dataset</h2>
+<pre class="r"><code>job_perf %&gt;%
+  ggplot(aes(x = YEAR)) +
+  geom_histogram(binwidth = 4, fill = &quot;blue&quot;) +
+  ggtitle(&quot;Scale Years&quot;)</code></pre>
+<p><img src="/findings/performance_tidy_text_files/figure-html/eda-1.png" width="672" /></p>
+<pre class="r"><code>job_perf %&gt;%
+  ggplot(aes(x = SOURCE_DOMAIN, fill = as.factor(SOURCE_DOMAIN))) +
+  geom_bar(show.legend = FALSE) +
+  ggtitle(&quot;Source of Scales&quot;)</code></pre>
+<p><img src="/findings/performance_tidy_text_files/figure-html/eda-2.png" width="672" /></p>
 </div>
 <div id="word-frequency-in-scales" class="section level2">
 <h2>Word Frequency in Scales</h2>
 <pre class="r"><code>#Tidying the data
 
-tidy_perf &lt;- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
+tidy_perf &lt;- tibble(domain = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
 data(stop_words)
 
 tidy_perf &lt;- tidy_perf %&gt;%
   unnest_tokens(word, text) %&gt;%
   anti_join(stop_words) %&gt;%
-  count(source, word, sort = TRUE) %&gt;% 
-  filter(word != &quot;na&quot;)
-
+  count(domain, word, sort = TRUE)
+  
 tidy_perf %&gt;%
+  count(word, sort = TRUE) %&gt;%
   filter(n &gt; 5) %&gt;%
   mutate(word = reorder(word, n)) %&gt;%
-  ggplot(aes(word, n, fill = source)) +
-  geom_col() +
+  ggplot(aes(word, n, fill = word)) +
+  geom_col(show.legend = FALSE) +
   xlab(NULL) +
   coord_flip() +
-  ggtitle(&quot;Highest Frequency Words in Job Performance Scale&quot;)</code></pre>
-<p><img src="../../findings/performance_tidy_text_files/figure-html/process%20for%20turning%20the%20text%20into%20a%20tidy%20format-1.png" width="672" /></p>
+  ggtitle(&quot;Highest Frequency Words in Job Performance Scales&quot;)</code></pre>
+<p><img src="/findings/performance_tidy_text_files/figure-html/into_tidy-1.png" width="672" /></p>
 </div>
 <div id="sentiment-analysis-with-job-performance-scales" class="section level2">
 <h2>Sentiment Analysis with Job Performance Scales</h2>
@@ -267,14 +307,14 @@ perf_sentiment %&gt;%
   labs(y = &quot;Contribution to sentiment&quot;,
        x = NULL) +
   coord_flip()</code></pre>
-<p><img src="../../findings/performance_tidy_text_files/figure-html/something-1.png" width="672" /></p>
+<p><img src="/findings/performance_tidy_text_files/figure-html/sentiment_analysis-1.png" width="672" /></p>
 <pre class="r"><code>tidy_perf %&gt;%
   inner_join(get_sentiments(&quot;bing&quot;)) %&gt;%
   count(word, sentiment, sort = TRUE) %&gt;%
   acast(word ~ sentiment, value.var = &quot;n&quot;, fill = 0) %&gt;%
   comparison.cloud(colors = c(&quot;#1b2a49&quot;, &quot;#00909e&quot;), 
                    max.words = 100)</code></pre>
-<p><img src="../../findings/performance_tidy_text_files/figure-html/something-2.png" width="672" /></p>
+<p><img src="/findings/performance_tidy_text_files/figure-html/sentiment_analysis-2.png" width="672" /></p>
 <p>Done</p>
 </div>
 </div>
