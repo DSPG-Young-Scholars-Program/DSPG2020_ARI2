@@ -29,6 +29,7 @@ library(readr)
 library(stringr)
 library(reshape2)
 library(wordcloud)
+library(readxl)
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
