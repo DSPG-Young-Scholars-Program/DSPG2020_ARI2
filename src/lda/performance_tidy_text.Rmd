@@ -1,5 +1,7 @@
 ---
-title: "Job Performance: Tidy Text"
+title: "Exploring Job Performance Scales"
+description: "An examination of our collected job performance scales"
+tags: ["R", "text analysis", "tidytext", "sentiment"]
 author: "Liz Miller"
 date: "7/22/2020"
 output: html_document
@@ -16,7 +18,7 @@ knitr::opts_chunk$set(
 ## Tidy Text Analysis for Job Performance Scales
 
 
-```{r subsetting the data, message=FALSE, warning=FALSE}
+```{r read_data, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyverse)
 library(tidytext)
@@ -66,7 +68,7 @@ job_perf %>%
 
 ##Word Frequency in Scales
 
-```{r process for turning the text into a tidy format, message=FALSE, warning=FALSE}
+```{r into_tidy, message=FALSE, warning=FALSE}
 #Tidying the data
 
 tidy_perf <- tibble(domain = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
@@ -90,7 +92,7 @@ tidy_perf %>%
 
 ##Sentiment Analysis with Job Performance Scales
 
-```{r sentiment analysis in scales} 
+```{r sentiment_analysis} 
 
 perf_sentiment <- tidy_perf %>%
   inner_join(get_sentiments("bing")) %>%
