@@ -29,6 +29,7 @@ library(readr)
 library(stringr)
 library(reshape2)
 library(wordcloud)
+library(readxl)
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
@@ -78,7 +79,7 @@ tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
   count(domain, word, sort = TRUE)
-  
+
 tidy_perf %>%
   count(word, sort = TRUE) %>%
   filter(n > 5) %>%
