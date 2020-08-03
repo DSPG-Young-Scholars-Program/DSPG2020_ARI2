@@ -1,5 +1,7 @@
 ---
-title: "Job Performance: Tidy Text"
+title: "Exploring Job Performance Scales"
+description: "An examination of our collected job performance scales"
+tags: ["R", "text analysis", "tidytext", "sentiment"]
 author: "Liz Miller"
 date: "7/22/2020"
 output: html_document
@@ -16,7 +18,7 @@ knitr::opts_chunk$set(
 ## Tidy Text Analysis for Job Performance Scales
 
 
-```{r subsetting the data, message=FALSE, warning=FALSE}
+```{r read_data, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyverse)
 library(tidytext)
@@ -28,42 +30,69 @@ library(stringr)
 library(reshape2)
 library(wordcloud)
 
-job_perf <- read_csv("~/ari2_07_21.csv")
+job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
+soldier_effective <- job_perf %>%
+  filter(CITATION == "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
+
+job_perf <- job_perf %>%
+  filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
+
+#Grouping by scale source/citation if we want to consider texts as documents
 cols <- c('STEM', 'ITEM')
-job_perf$scale <- 
-  apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
 job_perf$scale <- gsub("NA",' ', job_perf$scale)
+
+job_perf <- job_perf %>%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
+  summarise(scale = paste0(scale, collapse = " "))
+```
+
+## Basic overview of dataset
+
+``` {r eda}
+
+job_perf %>%
+  ggplot(aes(x = YEAR)) +
+  geom_histogram(binwidth = 4, fill = "blue") +
+  ggtitle("Scale Years")
+
+job_perf %>%
+  ggplot(aes(x = SOURCE_DOMAIN, fill = as.factor(SOURCE_DOMAIN))) +
+  geom_bar(show.legend = FALSE) +
+  ggtitle("Source of Scales")
 
 ```
 
+
+
 ##Word Frequency in Scales
 
-```{r process for turning the text into a tidy format, message=FALSE, warning=FALSE}
+```{r into_tidy, message=FALSE, warning=FALSE}
 #Tidying the data
 
-tidy_perf <- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
+tidy_perf <- tibble(domain = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
 data(stop_words)
 
 tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
-  count(source, word, sort = TRUE) %>% 
-  filter(word != "na")
-
+  count(domain, word, sort = TRUE)
+  
 tidy_perf %>%
+  count(word, sort = TRUE) %>%
   filter(n > 5) %>%
   mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word, n, fill = source)) +
-  geom_col() +
+  ggplot(aes(word, n, fill = word)) +
+  geom_col(show.legend = FALSE) +
   xlab(NULL) +
   coord_flip() +
-  ggtitle("Highest Frequency Words in Job Performance Scale")
+  ggtitle("Highest Frequency Words in Job Performance Scales")
 ```
 
 ##Sentiment Analysis with Job Performance Scales
 
-```{r something } 
+```{r sentiment_analysis} 
 
 perf_sentiment <- tidy_perf %>%
   inner_join(get_sentiments("bing")) %>%
