@@ -1,5 +1,5 @@
 ---
-title: "Open Source Software 2020 Summer Project"
+title: "ARI Individual Performance 2020 Summer Project"
 output: html_document
 ---
 
@@ -20,4 +20,4 @@ In order to provide the U.S. Army with the insight it seeks, we will need to con
 
 ### Our Approach 
 
-Example text: Over the course of the 2020 Data Science for the Public Good Program, our team worked to find assesment scales, extract individual items, and apply text analysis methods to examine themes and topics in these asesment scales. In our project, we leveraged academic and other document databases, performed dataset formation and curation, and implemented text analyeses.
+Over the course of the 2020 Data Science for the Public Good Program, our team worked to find assesment scales, extract individual items, and apply text analysis methods to examine themes and topics in these asesment scales. In our project, we leveraged academic and other document databases, performed dataset formation and curation, and implemented text analyeses.

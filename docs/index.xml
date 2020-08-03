@@ -11,69 +11,49 @@
     
     
     <item>
-      <title>General Overview of the Project</title>
-      <link>/findings/general-overview/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/general-overview/</guid>
-      <description>While this page is optional, it probably makes sense to have one weighted at the top (see the front matter at the top of this Rmd file) that gives a general overview of the project. This could be something like the final poster while the other pages highlight more in-depth observations. Here is a general schema of what should be covered throughout your website:
-Main Findings [Here you will describe the results and include important visualizations from your project.</description>
-    </item>
-    
-    <item>
-      <title>Results Section One</title>
-      <link>/findings/results-section-one/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/results-section-one/</guid>
-      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Examples Page If you want to add in an image on an Rmd file, use this link here. It ends up being a little tricky, but as long as you have created a folder to insert your images, you can just use some markdown code or html to insert images in the format you want.</description>
-    </item>
-    
-    <item>
-      <title>Results Section Two</title>
-      <link>/findings/results-section-two/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/results-section-two/</guid>
-      <description>[Here you will describe the data discoversy process, the data used, and the methods employed for this single page. Since you already have a Project Overview and Data &amp;amp; Methods tabs, you probably want to keep this first paragraph fairly short and use the rest of the document to walk your readers through your analyses.]
-Main Findings [Here you will describe the results and include important visualizations from your project.</description>
-    </item>
-    
-    <item>
-      <title>Results Section Three</title>
-      <link>/findings/results-section-three/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/results-section-three/</guid>
-      <description>[Here you will describe the data discoversy process, the data used, and the methods employed for this single page. Since you already have a Project Overview and Data &amp;amp; Methods tabs, you probably want to keep this first paragraph fairly short and use the rest of the document to walk your readers through your analyses.]
-Main Findings [Here you will describe the results and include important visualizations from your project.</description>
-    </item>
-    
-    <item>
-      <title>Open Source Software 2020 Summer Project</title>
+      <title>ARI Individual Performance 2020 Summer Project</title>
       <link>/methods/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/methods/</guid>
-      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Data and Methods Example text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in varius purus. Nullam ut sodales ante. Fusee justo nisi, suscipit a lacus et, posuere sagittis ex. Nulla convallis ante elit, at consequat ipsum ultricies ut. Aliquam erat volutpat. nderline. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</description>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Data and Methods In order to provide our stakeholder, the Army Research Institute, with pertinant insight regarding the fesability of predicting behavioral performance using existing data sources we must first identify existing authoratative behavioral performance items from academic, industry, government and military sources. In essence, the collection of this corpus of documents will serve as the basis from which a consensus regarding themes and topics relating to behavioral performance will be extracted.</description>
     </item>
     
     <item>
-      <title>Open Source Software 2020 Summer Project</title>
+      <title>ARI Individual Performance 2020 Summer Project</title>
       <link>/overview/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/overview/</guid>
-      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Project Overview Example text: Current economic indicators and indicators developed by the National Center for Science &amp;amp; Engineering Statistics (NCSES) do not measure the value of goods and services that fall outside of market transactions. Although NCSES does track some types of software development, it is challenging to account for open source software (OSS) outputs because these products are largely being advanced outside of traditional business contexts.</description>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Project Overview According to the Data Manpower Data Center (DMDC) the United States Army approximately 475 thousand active duty, and approximately 190 thousand reserve, service members. As part of its standard personnel management practices it collects a number of measures and/or surveys from and about these service members. Given the scope, depth, duration of this data source, the U.</description>
     </item>
     
     <item>
-      <title>Open Source Software 2020 Summer Project</title>
+      <title>ARI Individual Performance 2020 Summer Project</title>
       <link>/team/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/team/</guid>
       <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  UVA Data Science for the Public Good The Data Science for the Public Good (DSPG) Young Scholars program is a summer immersive program held at the Biocomplexity Institute’s Social and Decision Analytics division (SDAD). In its seventh year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges around critical social issues relevant in the world today.</description>
+    </item>
+    
+    <item>
+      <title>Job Performance: LDA Topic Modeling</title>
+      <link>/findings/performance_lda/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_lda/</guid>
+      <description>Data Setup This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale.
+job_perf &amp;lt;- read_csv(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&amp;quot;) ## Warning: Missing column names filled in: &amp;#39;X19&amp;#39; [19], &amp;#39;X20&amp;#39; [20], &amp;#39;X21&amp;#39; [21] ## Parsed with column specification: ## cols( ## .</description>
+    </item>
+    
+    <item>
+      <title>Job Performance: Tidy Text</title>
+      <link>/findings/performance_tidy_text/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_tidy_text/</guid>
+      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) job_perf &amp;lt;- read_csv(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/ari2_07_21.csv&amp;quot;) cols &amp;lt;- c(&amp;#39;STEM&amp;#39;, &amp;#39;ITEM&amp;#39;) job_perf$scale &amp;lt;- apply( job_perf[ , cols ], 1 , paste, collapse = &amp;quot; &amp;quot;) job_perf$scale &amp;lt;- gsub(&amp;quot;NA&amp;quot;,&amp;#39; &amp;#39;, job_perf$scale)  Word Frequency in Scales #Tidying the data tidy_perf &amp;lt;- tibble(source = job_perf$SOURCE_DOMAIN, text = job_perf$scale) data(stop_words) tidy_perf &amp;lt;- tidy_perf %&amp;gt;% unnest_tokens(word, text) %&amp;gt;% anti_join(stop_words) %&amp;gt;% count(source, word, sort = TRUE) %&amp;gt;% filter(word !</description>
     </item>
     
   </channel>

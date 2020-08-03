@@ -1,5 +1,5 @@
 ---
-title: "Open Source Software 2020 Summer Project"
+title: "ARI Individual Performance 2020 Summer Project"
 output: html_document
 ---
 
@@ -17,10 +17,10 @@ h1, h2, h3 {
 ### ARI2 2020 DSPG Team Members 
 
 <center>
-![](/daniel.jpg) ![](/liz.jpg) ![](/gina.jpeg) 
+![](/dan.png) ![](/liz.png) ![](/gina.png)
 </center>
 
-##### [Daniel Bullock (Indiana University, Computational Neuroanatomy)](https://github.com/DanNBullock), [Elizabeth Miller (William & Mary, International Relations/History)](https://github.com/lizhmil), and [Gina Fendley (Marymount Univeristy, Philsophy & Accounting, Economics, and Finance)](https://github.com/gina-fendley) {style=text-align:center}
+##### [Daniel Bullock (Indiana University, Computational Neuroanatomy)](https://github.com/DanNBullock), [Elizabeth Miller (William & Mary, International Relations/History)](https://github.com/lizhmil), and [Gina Fendley (Marymount Univeristy, Philsophy)](https://github.com/gina-fendley) {style=text-align:center}
 ###
 
 ### UVA SDAD Team Members 
@@ -35,10 +35,4 @@ h1, h2, h3 {
 
 ### Project Sponsors/Stakeholders 
 
-##### [Photos go about here.] {style=text-align:center}
-
-##### [Carol Robbins (NCSES, Senior Analyst)](https://www.nsf.gov/staff/staff_bio.jsp?lan=crobbins&from_org=) and [Ledia Guci (NCSES, Science Resource Analyst)](https://www.nsf.gov/staff/staff_bio.jsp?lan=lguci&from_org=) {style=text-align:center}
-
-### Acknowledgements  
-
-##### [Text here.] {style=text-align:center}
+##### Kelly Ervin (ARI; Chief, Program, Budget, and Strategies) {style=text-align:center}
