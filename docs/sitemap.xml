@@ -3,46 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/findings/general-overview/</loc>
-  </url>
-  
-  <url>
-    <loc>/findings/results-section-one/</loc>
-  </url>
-  
-  <url>
-    <loc>/findings/results-section-two/</loc>
-  </url>
-  
-  <url>
-    <loc>/findings/results-section-three/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/app/</loc>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/collapsibletree/</loc>
-  </url>
-  
-  <url>
-    <loc>/findings/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/geospatial/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/networks/</loc>
-  </url>
-  
-  <url>
     <loc>/methods/</loc>
   </url>
   
@@ -55,7 +15,19 @@
   </url>
   
   <url>
-    <loc>/tags/r/</loc>
+    <loc>/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>/findings/</loc>
+  </url>
+  
+  <url>
+    <loc>/findings/performance_lda/</loc>
+  </url>
+  
+  <url>
+    <loc>/findings/performance_tidy_text/</loc>
   </url>
   
   <url>
