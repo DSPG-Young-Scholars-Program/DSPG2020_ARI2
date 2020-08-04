@@ -3,6 +3,7 @@ title: "Job Performance Scales: LDA Topic Modeling"
 description: "This page demonstrates an LDA Topic Modeling approach to our corpus."
 tags: ["R", "text analysis", "topic models", "LDA"]
 weight: 2
+draft: false
 output: html_document
 ---
 ```{css, echo=FALSE}
@@ -31,7 +32,7 @@ set.seed(2020)
 
 Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words. Using Dirichlet probability distribution, the model draws out the implicit themes across a set of documents. We choose LDA because it is a more commonly used topic modeling process which members of the team had some familiarity with. For this particular implementation of LDA, we used the [STM package in R](http://www.luigicurini.com/uploads/6/7/9/8/67985527/stmvignette.pdf). The goal was to see if the latent topics identified by the model were related to performance or the indicators of performance as outlined in [Koopmans et al](https://www.researchgate.net/publication/51508445_Conceptual_Frameworks_of_Individual_Work_Performance).  
 
-```{r read_data, include=FALSE}
+```{r read-data, include=FALSE}
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
@@ -51,7 +52,7 @@ job_perf <- job_perf %>%
 ## Choosing our Parameters 
 At this particular stage in the process, LDA may not be the most appropriate method, as it is works best with larger datasets. We are seeking, at this point, to demonstrate that with a larger corpus of job performance scales, this approach could lead valuable results. Because of our limited dataset, we took certain steps to make our corpus as large as possible. Typically, a standard set of stop words are removed from the corpus. Stop words are extremely common words which help to form the structure of sentences, but do not inform the content. We did not want to remove this standard stopwords list for two reasons. First, to maximize our corpus, and second, to include pronouns such as "I" and "You" which provide some information about the wording of scale items and the level of analysis. To construct our own stopwords list, we looked at the most frequent words in the dataset. 
 
-```{r word_frequencies, message=FALSE, warning=FALSE, echo=FALSE}
+```{r word-frequencies, message=FALSE, warning=FALSE, echo=FALSE}
 tidy_perf <- tibble(text = job_perf$scale)
 
 tidy_perf <- tidy_perf %>%
@@ -78,7 +79,7 @@ Along with the most frequent words, we also included as stop words words referin
 
 ```{r pre-processing, message=FALSE, warning=FALSE, include=FALSE}
 
-stop.words <- c("the", "to", "of", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "this", "whatever", "which", "whichever", "where", "wherever", "it", "at", "like", "are", "from", "do", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital", "newfoundland", "britain", "on", "patient", "patients", "in", "am", "is")
+stop.words <- c("the", "to", "of", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "this", "whatever", "which", "whichever", "where", "wherever", "it", "at", "like", "are", "from", "do", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital", "newfoundland", "britain", "on", "patient", "patients", "in", "am", "is", "was", "with", "be")
 
 processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
@@ -106,7 +107,7 @@ kresult <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA",
 
 ```
 
-```{r kresult_plot, echo=FALSE, message=FALSE, warning=FALSE}
+```{r kresult-plot, echo=FALSE, message=FALSE, warning=FALSE}
 plot(kresult) 
 
 kresult$results %>%
@@ -130,17 +131,17 @@ An ideal model would have a high held-out likelihood, a low level of residuals, 
 
 When using STM with LDA modeling, STM recommends running a model selection process. With the number of topics chosen from the model above, multiple attempts at LDA to find the most ideal model based again on semantic coherence and exclusivity of topics. 
 
-```{r model_select, message=FALSE, warning=FALSE, include=FALSE}
+```{r model-select, message=FALSE, warning=FALSE, include=FALSE}
 
-modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 10,
+modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 12,
                           max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
                           seed = 2020, verbose = FALSE)
 
-perf_model <- modelSelect$runout[[2]] 
+perf_model <- modelSelect$runout[[1]] 
 
 ```
 
-```{r model_select_output, echo=FALSE, message=FALSE, warning=FALSE}
+```{r model-select-output, echo=FALSE, message=FALSE, warning=FALSE}
 plotModels(modelSelect)
 ```
 
@@ -148,10 +149,10 @@ With the best model, the one with the highest exclusivity and semantic coherence
 
 ##Visualizations of the Topic Model
 
-The outputs from the topic model reveal some of the latent themes in the job performance scales. We can start to see some themes pulled out, such as ideal job characteritics, feelings about supervisors, satisfaction, and working in groups. 
+The outputs from the topic model reveal some of the latent themes in the job performance scales. We can start to see some themes being pulled out, such as ideal job characteritics, feelings about supervisors, satisfaction, and working in groups. 
 
 
-```{r model_output, echo=FALSE, message=FALSE, warning=FALSE}
+```{r model-output, echo=FALSE, message=FALSE, warning=FALSE}
 
 labelTopics(perf_model)$frex -> perf_topics
 datatable(perf_topics)
@@ -171,7 +172,7 @@ wordclouds <- function(model, topic) {
 
 par(mfrow = c(1,2))
 
-topicnum <- 1:10
+topicnum <- 1:12
 for (i in topicnum) {
   wordclouds(perf_model, i)
 }
