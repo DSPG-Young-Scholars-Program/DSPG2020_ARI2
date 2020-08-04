@@ -2,8 +2,6 @@
 title: "Exploring Job Performance Scales"
 description: "An examination of our collected job performance scales"
 tags: ["R", "text analysis", "tidytext", "sentiment"]
-author: "Liz Miller"
-date: "7/22/2020"
 output: html_document
 ---
 
@@ -23,10 +21,12 @@ knitr::opts_chunk$set(
 
 ```
 
-## Tidy Text Analysis for Job Performance Scales
+## Approach
+
+Once we compiled all of our scale items, we wanted to do text analysis on the scale items. These steps replace the typical exploratory data analysis, but allows us to begin to get a sense of what the contents of our job performance scales are.  
 
 
-```{r read_data, message=FALSE, warning=FALSE}
+```{r read_data, echo=TRUE, message=FALSE, warning=FALSE}
 
 library(dplyr)
 library(tidyverse)
@@ -39,17 +39,7 @@ library(stringr)
 library(reshape2)
 library(wordcloud)
 library(readxl)
-
 library(gridExtra)
-```
- 
-## Approach
-
-Once we compiled all of our scale items, we wanted to 
-
-
-```{r read_data, message=FALSE, warning=FALSE, include=FALSE}
-
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
 soldier_effective <- job_perf %>%
@@ -66,9 +56,11 @@ job_perf$scale <- gsub("NA",' ', job_perf$scale)
 job_perf <- job_perf %>%
   group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
   summarise(scale = paste0(scale, collapse = " "))
+
+job_perf$id <- c(1:63)
 ```
 
-## Basic overview of dataset
+Our scales come from a range of years, but mainly come from the last thirty to forty years. Most of the scales come from academic sources, but there are also some from military and government sources. 
 
 ```{r eda, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -90,38 +82,57 @@ grid.arrange(scale_yr, scale_source, nrow = 1)
 
 ```
 
+##Words in Scales
 
+We also took a look at the most frequent words within the scales to verify that the scales that had been collected were, in fact, related to word and performance. These plots have the most common words which don't add content, stop words, removed. 
 
-##Word Frequency in Scales
+```{r into_tidy, echo=TRUE, message=FALSE, warning=FALSE} 
 
-```{r into_tidy, message=FALSE, warning=FALSE}
-#Tidying the data
-
-tidy_perf <- tibble(domain = job_perf$SOURCE_DOMAIN, text = job_perf$scale)
+tidy_perf <- tibble(id = job_perf$id, text = job_perf$scale)
 data(stop_words)
 
 tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
-  count(domain, word, sort = TRUE)
+  count(id, word, sort = TRUE)
 
 tidy_perf %>%
   count(word, sort = TRUE) %>%
-  filter(n > 5) %>%
+  filter(n > 30) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word, n, fill = word)) +
   geom_col(show.legend = FALSE) +
-  xlab(NULL) +
+  xlab("Word") +
+  ylab("Frequency") +
   coord_flip() +
   ggtitle("Highest Frequency Words in Job Performance Scales")
 ```
 
-##Sentiment Analysis with Job Performance Scales
+##Sentiment Analysis
 
-```{r sentiment_analysis} 
+We were also curious to see the sentiments contained within the job performance scales. That is, were the scales measuing respones to more negative questions and statement or more positive questions are statements. Within the dataset, using a standard sentiment dictionary, we determined that there were 449 negative words and 491 positive words. 
+
+```{r sentiment_counts, echo=FALSE, message=FALSE, warning=FALSE}
+
+bingnegative <- get_sentiments("bing") %>%
+  filter(sentiment == "negative")
+
+bingpositive <- get_sentiments("bing") %>%
+  filter(sentiment == "positive")
+
+tidy_perf %>%
+  semi_join(bingnegative) %>%
+  summarize(negativewords = n())
+
+tidy_perf %>%
+  semi_join(bingpositive) %>%
+  summarize(positiveword = n())
+```
+
+```{r sentiment_analysis, echo=FALSE, message=FALSE, warning=FALSE}
 
 perf_sentiment <- tidy_perf %>%
-  inner_join(get_sentiments("bing")) %>%
+  inner_join(get_sentiments("nrc")) %>%
   count(word, sentiment, sort = TRUE) %>%
   ungroup()
 
@@ -145,5 +156,49 @@ tidy_perf %>%
                    max.words = 100)
 
 ```
+Positive, trust, suprise, anticipation, and joy seem to have the most weight within these measures of sentiment. 
+
+##Comparison between Collected Scales and Existing Army Framework
+
+This graph gives a comparison between the words in one existing Army framework for performance and the rest of our performance scales. We chose not to include this particular framework in our text analysis because it was extremely specific to the army context. As you can see from the graph below, the words are very different in content between the two scales. 
+
+```{r scales_v_army, echo=FALSE, message=FALSE, warning=FALSE}
+
+tidy_perf <- tibble(text = job_perf$scale)
+
+tidy_perf <- tidy_perf %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+
+tidy_soldier <- tibble(text = soldier_effective$ITEM)
+
+tidy_soldier <- tidy_soldier %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+
+joined <- full_join(tidy_perf, tidy_soldier, by = "word")
+
+joined[is.na(joined)] <- 0
+joined$total <- joined$n.x + joined$n.y
+names(joined) <- c("word", "scales", "army", "total")
+
+joined <- pivot_longer(joined, cols = c("scales", "army"))
+
+#joined$total <- as.numeric(joined$total)
+#joined$value <- as.numeric(joined$value)
+
+joined %>%
+  filter(total > 30) %>%
+  ggplot(aes(x = reorder(word, -total), y = value, fill = name)) + 
+  geom_col() +
+  xlab("Word") +
+  ylab("Frequency") +
+  coord_flip() +
+  ggtitle("Highest Frequency Words")
+
+```
+
 
 Done
