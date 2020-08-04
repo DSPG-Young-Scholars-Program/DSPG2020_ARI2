@@ -2,7 +2,8 @@
 title: "Exploring Job Performance Scales"
 description: "An examination of our collected job performance scales"
 tags: ["R", "text analysis", "tidytext", "sentiment"]
-weight: 2
+author: "Liz Miller"
+date: "7/22/2020"
 output: html_document
 ---
 
@@ -19,6 +20,14 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	include = FALSE
 )
+
+```
+
+## Tidy Text Analysis for Job Performance Scales
+
+
+```{r read_data, message=FALSE, warning=FALSE}
+
 library(dplyr)
 library(tidyverse)
 library(tidytext)
@@ -30,6 +39,7 @@ library(stringr)
 library(reshape2)
 library(wordcloud)
 library(readxl)
+
 library(gridExtra)
 ```
  
@@ -39,7 +49,6 @@ Once we compiled all of our scale items, we wanted to
 
 
 ```{r read_data, message=FALSE, warning=FALSE, include=FALSE}
-
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
@@ -60,6 +69,7 @@ job_perf <- job_perf %>%
 ```
 
 ## Basic overview of dataset
+
 ```{r eda, echo=FALSE, message=FALSE, warning=FALSE}
 
 job_perf %>%
