@@ -35,4 +35,4 @@ h1, h2, h3 {
 
 ### Project Sponsors/Stakeholders 
 
-##### Kelly Ervin (ARI; Chief, Program, Budget, and Strategies) {style=text-align:center}
+##### Kelly Ervin (ARI; Chief of Program, Budget, and Strategies) {style=text-align:center}

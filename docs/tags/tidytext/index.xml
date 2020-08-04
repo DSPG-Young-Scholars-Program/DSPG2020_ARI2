@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tidytext on UVA Biocomplexity Institute</title>
+    <link>/tags/tidytext/</link>
+    <description>Recent content in tidytext on UVA Biocomplexity Institute</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/tags/tidytext/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Exploring Job Performance Scales</title>
+      <link>/findings/performance_tidy_text/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_tidy_text/</guid>
+      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) library(readxl) job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) soldier_effective &amp;lt;- job_perf %&amp;gt;% filter(CITATION == &amp;quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp;amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION !</description>
+    </item>
+    
+  </channel>
+</rss>

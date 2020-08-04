@@ -1,1 +1,1 @@
-../../src/lda/performance_lda.Rmd
+../../src/lda/performance_tidy_text.Rmd
