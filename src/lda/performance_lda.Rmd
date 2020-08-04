@@ -136,7 +136,7 @@ modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 8,
                           max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
                           seed = 2020, verbose = FALSE)
 
-perf_model <- modelSelect$runout[[2]] 
+perf_model <- modelSelect$runout[[3]] 
 
 ```
 
@@ -165,8 +165,10 @@ plot(perf_model, type = "summary", xlim = c(0, 1), labeltype = "frex", n = 5)
 #findThoughts(perf_model, texts = job_perf$SCALE_NAME)
 
 wordclouds <- function(model, topic) {
-  cloud(model, topic = topic, max.words = 50)
+  cloud(model, topic = topic, max.words = 40, scale = c(2, .5))
 }
+
+par(mfrow = c(1,2))
 
 topicnum <- 1:8
 for (i in topicnum) {

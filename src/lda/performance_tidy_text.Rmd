@@ -13,20 +13,7 @@ h1, h2, h3 {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-	message = FALSE,
-	warning = FALSE,
-	include = FALSE
-)
-
-```
-
-## Approach
-
-Once we compiled all of our scale items, we wanted to do text analysis on the scale items. These steps replace the typical exploratory data analysis, but allows us to begin to get a sense of what the contents of our job performance scales are.  
-
-
-```{r read_data, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(tidyverse)
@@ -40,6 +27,17 @@ library(reshape2)
 library(wordcloud)
 library(readxl)
 library(gridExtra)
+
+```
+
+## Approach
+
+Once we compiled all of our scale items, we wanted to do text analysis on the scale items. These steps replace the typical exploratory data analysis, but allows us to begin to get a sense of what the contents of our job performance scales are.  
+
+
+```{r read_data, message=FALSE, warning=FALSE, include=FALSE}
+
+
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
 soldier_effective <- job_perf %>%
@@ -69,16 +67,16 @@ job_perf %>%
   geom_histogram(binwidth = 4, fill = "blue") +
   xlab("Year") +
   ylab("Number of Items") +
-  ggtitle("Scale Years") -> scale_yr
+  ggtitle("Scale Years")
 
 job_perf %>%
   ggplot(aes(x = SOURCE_DOMAIN, fill = as.factor(SOURCE_DOMAIN))) +
   geom_bar(show.legend = FALSE) +
   xlab("Scale Source Domains") +
   ylab("Number of Items") + 
-  ggtitle("Source of Scales") -> scale_source
+  ggtitle("Source of Scales")
 
-grid.arrange(scale_yr, scale_source, nrow = 1)
+par(mfrow = c(1,2))
 
 ```
 
@@ -86,7 +84,7 @@ grid.arrange(scale_yr, scale_source, nrow = 1)
 
 We also took a look at the most frequent words within the scales to verify that the scales that had been collected were, in fact, related to word and performance. These plots have the most common words which don't add content, stop words, removed. 
 
-```{r into_tidy, echo=TRUE, message=FALSE, warning=FALSE} 
+```{r into_tidy, echo=FALSE, message=FALSE, warning=FALSE}
 
 tidy_perf <- tibble(id = job_perf$id, text = job_perf$scale)
 data(stop_words)
@@ -112,7 +110,7 @@ tidy_perf %>%
 
 We were also curious to see the sentiments contained within the job performance scales. That is, were the scales measuing respones to more negative questions and statement or more positive questions are statements. Within the dataset, using a standard sentiment dictionary, we determined that there were 449 negative words and 491 positive words. 
 
-```{r sentiment_counts, echo=FALSE, message=FALSE, warning=FALSE}
+```{r sentiment_counts, message=FALSE, warning=FALSE, include=FALSE}
 
 bingnegative <- get_sentiments("bing") %>%
   filter(sentiment == "negative")
@@ -156,6 +154,9 @@ tidy_perf %>%
                    max.words = 100)
 
 ```
+
+
+
 Positive, trust, suprise, anticipation, and joy seem to have the most weight within these measures of sentiment. 
 
 ##Comparison between Collected Scales and Existing Army Framework
@@ -190,8 +191,8 @@ joined <- pivot_longer(joined, cols = c("scales", "army"))
 #joined$value <- as.numeric(joined$value)
 
 joined %>%
-  filter(total > 30) %>%
-  ggplot(aes(x = reorder(word, -total), y = value, fill = name)) + 
+  filter(total > 25) %>%
+  ggplot(aes(x = reorder(word, total), y = value, fill = name)) + 
   geom_col() +
   xlab("Word") +
   ylab("Frequency") +
@@ -200,5 +201,6 @@ joined %>%
 
 ```
 
+##Conclusion
 
-Done
+Some other remarks about these findings
