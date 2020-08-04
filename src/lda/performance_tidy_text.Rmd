@@ -35,12 +35,7 @@ library(DT)
 
 Once we compiled potential scale items, we extracted the scales from the collection of papers on job performance. The following table displays the relevant scale items we have collected. Before we explored two different topic modeling approaches, we wanted to get a sense of the the content and sources of the scale items. In order to do this, we explored tidytext methods of text analysis, many of which come from [Text Mining with R](https://www.tidytextmining.com). 
 
-```{r read_data, echo=FALSE, message=FALSE, warning=FALSE}
-
-raw_scales <- read_excel("/home/ehm7af/git/DSPG2020_ARI2/dataSource/DocumentSheetOnly.xlsx")
-raw_scales <- raw_scales[ , c(1:6, 8)]
-
-#datatable(raw_scales)
+```{r add_data, echo=FALSE, message=FALSE, warning=FALSE}
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
