@@ -7,18 +7,27 @@ date: "7/22/2020"
 output: html_document
 ---
 
+```{css, echo=FALSE}
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-	echo = TRUE,
 	message = FALSE,
-	warning = FALSE
+	warning = FALSE,
+	include = FALSE
 )
+
 ```
 
 ## Tidy Text Analysis for Job Performance Scales
 
 
 ```{r read_data, message=FALSE, warning=FALSE}
+
 library(dplyr)
 library(tidyverse)
 library(tidytext)
@@ -30,6 +39,16 @@ library(stringr)
 library(reshape2)
 library(wordcloud)
 library(readxl)
+
+library(gridExtra)
+```
+ 
+## Approach
+
+Once we compiled all of our scale items, we wanted to 
+
+
+```{r read_data, message=FALSE, warning=FALSE, include=FALSE}
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
@@ -51,17 +70,23 @@ job_perf <- job_perf %>%
 
 ## Basic overview of dataset
 
-``` {r eda}
+```{r eda, echo=FALSE, message=FALSE, warning=FALSE}
 
 job_perf %>%
   ggplot(aes(x = YEAR)) +
   geom_histogram(binwidth = 4, fill = "blue") +
-  ggtitle("Scale Years")
+  xlab("Year") +
+  ylab("Number of Items") +
+  ggtitle("Scale Years") -> scale_yr
 
 job_perf %>%
   ggplot(aes(x = SOURCE_DOMAIN, fill = as.factor(SOURCE_DOMAIN))) +
   geom_bar(show.legend = FALSE) +
-  ggtitle("Source of Scales")
+  xlab("Scale Source Domains") +
+  ylab("Number of Items") + 
+  ggtitle("Source of Scales") -> scale_source
+
+grid.arrange(scale_yr, scale_source, nrow = 1)
 
 ```
 
@@ -79,7 +104,7 @@ tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
   count(domain, word, sort = TRUE)
-  
+
 tidy_perf %>%
   count(word, sort = TRUE) %>%
   filter(n > 5) %>%
