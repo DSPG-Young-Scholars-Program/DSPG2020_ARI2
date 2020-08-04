@@ -29,7 +29,7 @@ set.seed(2020)
 
 ## Approach
 
-Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words. Using Dirichlet probability distribution, the model draws out the implicit themes across a set of documents. We choose LDA because it is a more commonly used topic modeling process which members of the team had some familiarity with. For this particular implementation of LDA, we used the [STM package in R] (http://www.luigicurini.com/uploads/6/7/9/8/67985527/stmvignette.pdf). The goal was to see if the latent topics identified by the model were related to performance or the indicators of performance as outlined in [Koopmans et al] (https://www.researchgate.net/publication/51508445_Conceptual_Frameworks_of_Individual_Work_Performance).  
+Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words. Using Dirichlet probability distribution, the model draws out the implicit themes across a set of documents. We choose LDA because it is a more commonly used topic modeling process which members of the team had some familiarity with. For this particular implementation of LDA, we used the [STM package in R](http://www.luigicurini.com/uploads/6/7/9/8/67985527/stmvignette.pdf). The goal was to see if the latent topics identified by the model were related to performance or the indicators of performance as outlined in [Koopmans et al](https://www.researchgate.net/publication/51508445_Conceptual_Frameworks_of_Individual_Work_Performance).  
 
 ```{r read_data, include=FALSE}
 
@@ -153,7 +153,8 @@ The outputs from the topic model reveal some of the latent themes in the job per
 
 ```{r model_output, echo=FALSE, message=FALSE, warning=FALSE}
 
-labelTopics(perf_model)
+labelTopics(perf_model)$frex -> perf_topics
+datatable(perf_topics)
 
 #topicQuality(perf_model, out.scale$documents)
 
@@ -165,7 +166,7 @@ plot(perf_model, type = "summary", xlim = c(0, 1), labeltype = "frex", n = 5)
 #findThoughts(perf_model, texts = job_perf$SCALE_NAME)
 
 wordclouds <- function(model, topic) {
-  cloud(model, topic = topic, max.words = 40, scale = c(2, .5))
+  cloud(model, topic = topic, max.words = 40, scale = c(2, .75))
 }
 
 par(mfrow = c(1,2))
@@ -176,7 +177,6 @@ for (i in topicnum) {
 }
 
 ```
-Note about different types of word outputs from STM vignette: "The function by default prints several different types of word profiles, including highest probability words and FREX words. FREX weights words by their overall frequency and how exclusive they are to the topic... Lift weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics...Similar to lift, score divides the log frequency of the word in the topic by the log frequency of the word in other topics."
 
 ##Conclusion
 
