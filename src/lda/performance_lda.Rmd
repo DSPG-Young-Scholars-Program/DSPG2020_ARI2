@@ -78,7 +78,7 @@ Along with the most frequent words, we also included as stop words words referin
 
 ```{r pre-processing, message=FALSE, warning=FALSE, include=FALSE}
 
-stop.words <- c("the", "to", "of", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "whatever", "which", "whichever", "where", "wherever", "it", "at", "like", "are", "from", "do", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital", "newfoundland", "britain", "on", "patient", "patients", "in")
+stop.words <- c("the", "to", "of", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "this", "whatever", "which", "whichever", "where", "wherever", "it", "at", "like", "are", "from", "do", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital", "newfoundland", "britain", "on", "patient", "patients", "in", "am", "is")
 
 processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
                                  removestopwords = FALSE, removenumbers = TRUE,
@@ -132,11 +132,11 @@ When using STM with LDA modeling, STM recommends running a model selection proce
 
 ```{r model_select, message=FALSE, warning=FALSE, include=FALSE}
 
-modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 8,
+modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 10,
                           max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
                           seed = 2020, verbose = FALSE)
 
-perf_model <- modelSelect$runout[[3]] 
+perf_model <- modelSelect$runout[[2]] 
 
 ```
 
@@ -159,11 +159,11 @@ datatable(perf_topics)
 #topicQuality(perf_model, out.scale$documents)
 
 #mod.out.corr <- topicCorr(perf_model)
-#plot(mod.out.corr)
+#plot(mod.out.corr, topic.names = c("w/ Others:", "Opportunities", "Available Tools:", "Relations w/ Supervisor:", "Job Characteristics:", "Opportunities & Feelings:", "Describe Work:", "Performance:"))
 
-plot(perf_model, type = "summary", xlim = c(0, 1), labeltype = "frex", n = 5)
+plot(perf_model, type = "summary", xlim = c(0, 2), labeltype = "frex", n = 5) #, topic.names = c("w/ Others:", "Opportunities:", "Available Tools:", "Relations w/ Supervisor:", "Job Characteristics:", "Satisfaction:", "Describe Work:", "Performance:"))
 
-#findThoughts(perf_model, texts = job_perf$SCALE_NAME)
+#findThoughts(perf_model, texts = job_perf$scale)
 
 wordclouds <- function(model, topic) {
   cloud(model, topic = topic, max.words = 40, scale = c(2, .75))
@@ -171,7 +171,7 @@ wordclouds <- function(model, topic) {
 
 par(mfrow = c(1,2))
 
-topicnum <- 1:8
+topicnum <- 1:10
 for (i in topicnum) {
   wordclouds(perf_model, i)
 }

@@ -208,6 +208,7 @@ joined %>%
   geom_col() +
   xlab("Word") +
   ylab("Frequency") +
+  scale_fill_discrete(name = "Source") +
   coord_flip() +
   ggtitle("Highest Frequency Words")
 
