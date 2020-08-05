@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Biterm Modeling of Performance Scales</title>
+        <link rel="canonical" href="../../findings/biterm_markdown/">
+        <style>
+
+    html body {
+        font-family: 'Oxygen', sans-serif;
+        background-color: #FFFFFF;
+    }
+
+    :root {
+        --accent: #232D4B;
+        --border-width:  0 ;
+    }
+
+</style>
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxygen">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/ascetic.min.css"> 
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css" integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="../../css/main.css">
+
+
+
+
+ 
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/bash.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>
+    
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+
+<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
+
+
+<script>
+$(document).ready(function(){
+    
+  var input = $('#night-mode-toggle');
+  var container = $('#bigbody');
+  var stat = $('#button-status');
+  
+  container.toggleClass(localStorage.toggled);
+  stat.bootstrapToggle(localStorage.button).change();
+  
+  input.on('click', function() {
+      if (localStorage.toggled != "-nightmode" ) {
+          container.toggleClass("-nightmode", true );
+          localStorage.toggled = "-nightmode";
+          localStorage.button = "on";
+       } else {
+          container.toggleClass("-nightmode", false );
+          localStorage.toggled = "";
+          localStorage.button = "off"
+       }
+  })
+});
+</script>
+ <meta name="generator" content="Hugo 0.74.2" />
+        <link href="" rel="alternate" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        <link href="" rel="feed" type="application/rss+xml" title="UVA Biocomplexity Institute" />
+        
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="mask-icon" href="../../img/favicon/safari-pinned-tab.svg" color="#000000">
+    <link rel="shortcut icon" href="../../img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    
+    
+    <meta property="og:title" content="Biterm Modeling of Performance Scales">
+    <meta property="og:type" content="article">
+      
+      <meta name="twitter:card" content="summary">
+      <meta name="twitter:image" content="/favicon/uva-dspg-logo.jpg" >
+      
+    <meta property="description" content="A summary  of our approach to using BTM to uncover the themes of job performance scales.">
+    <meta property="og:description" content="A summary  of our approach to using BTM to uncover the themes of job performance scales.">
+    
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:site" content="">
+    
+    </head>
+
+    
+    
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+
+    <body id = "bigbody">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand visible-xs" href="#">Biterm Modeling of Performance Scales</a>
+                    <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse">
+                    
+                        <ul class="nav navbar-nav">
+                            
+                                <li><a href="../../">Home</a></li>
+                            
+                                <li><a href="../../overview/">Overview</a></li>
+                            
+                                <li><a href="../../methods/">Data &amp; Methods</a></li>
+                            
+                                <li><a href="../../findings/">Findings</a></li>
+                            
+                                <li><a href="../../team/">Team</a></li>
+                            
+                        </ul>
+                    
+                    
+                        <ul class="nav navbar-nav navbar-right">
+                            
+                                <li class="navbar-icon"><a href="https://biocomplexity.virginia.edu/social-decision-analytics/dspg-program"><i class="fas fa-globe-americas"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://github.com/DSPG-Young-Scholars-Program"><i class="fab fa-github"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://twitter.com/UVA_BI"><i class="fab fa-twitter"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="mailto:kb7hp@virginia.edu"><i class="far fa-envelope"></i></a></li>
+                            
+                            
+                        </ul>
+                    
+                </div>
+            </div>
+        </nav>
+
+
+<main>
+
+    <div class="item">
+
+    
+    
+    
+
+    
+      
+      
+    
+
+    <h4><a href="../../findings/biterm_markdown/">Biterm Modeling of Performance Scales</a></h4>
+    
+    <h5>A summary  of our approach to using BTM to uncover the themes of job performance scales.</h5>
+
+    
+    
+    <a href="../../tags/r">
+        <kbd class="item-tag"> R </kbd>
+    </a>
+    
+    <a href="../../tags/text-analysis">
+        <kbd class="item-tag"> text analysis </kbd>
+    </a>
+    
+    <a href="../../tags/topic-models">
+        <kbd class="item-tag"> topic models </kbd>
+    </a>
+    
+    <a href="../../tags/btm">
+        <kbd class="item-tag"> BTM </kbd>
+    </a>
+    
+    <a href="../../tags/biterms">
+        <kbd class="item-tag"> biterms </kbd>
+    </a>
+    
+
+</div>
+
+
+    <br> <div class="text-justify">
+
+
+<style type="text/css">
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+</style>
+<div id="about-btm" class="section level2">
+<h2>About BTM</h2>
+<p>Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling, each document is analyzed for topic occurences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with. BTM solves this problem by analyzing the entire corpus of documents together.</p>
+<p>BTM works by colleting information about biterms in the document corpus. A &quot;biterm&quot; is an unordered co-occurence of words.</p>
+<p>Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. We hope to uncover common topics in performance scales using BTM techniques.</p>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<p>Here the model is defined. We kept the alpha and beta parameters standard to maintain a balance in the output between the number, specificity, and type of the topics. K was set to 10 to indicate that 10 topics should be identified.</p>
+<pre><code>## Biterm Topic Model
+##   trained with 1000 Gibbs iterations, alpha: 5, beta: 0.1
+##   topics: 10
+##   size of the token vocabulary: 2118
+##   topic distribution theta: 0.158 0.101 0.095 0.106 0.109 0.074 0.084 0.063 0.109 0.101</code></pre>
+<pre class="r"><code>#terms(model,type = &quot;biterms&quot;)
+terms(model)</code></pre>
+<pre><code>## [[1]]
+##    token probability
+## 1    job  0.13073644
+## 2   feel  0.03699595
+## 3 people  0.02568620
+## 4 skills  0.01720388
+## 5 chance  0.01394145
+## 
+## [[2]]
+##     token probability
+## 1    life  0.02596582
+## 2    plan  0.02563335
+## 3 related  0.02363854
+## 4     job  0.01998138
+## 5  family  0.01831904
+## 
+## [[3]]
+##         token probability
+## 1     receive  0.02496664
+## 2    customer  0.01899712
+## 3   customers  0.01759253
+## 4 information  0.01548564
+## 5     clients  0.01513449
+## 
+## [[4]]
+##          token probability
+## 1 organization  0.09390606
+## 2         feel  0.04649472
+## 3         life  0.01741577
+## 4        leave  0.01646754
+## 5     personal  0.01646754
+## 
+## [[5]]
+##         token probability
+## 1         job  0.05913113
+## 2 performance  0.05201436
+## 3  supervisor  0.02230955
+## 4  management  0.01704932
+## 5    feedback  0.01643047
+## 
+## [[6]]
+##       token probability
+## 1       job  0.04659101
+## 2   company  0.02708573
+## 3  policies  0.02575583
+## 4    social  0.02176611
+## 5 employees  0.01821970
+## 
+## [[7]]
+##     token probability
+## 1   goals  0.03726781
+## 2  health  0.02276824
+## 3  safety  0.01884944
+## 4 program  0.01610628
+## 5    team  0.01571440
+## 
+## [[8]]
+##     token probability
+## 1     job  0.06395172
+## 2    time  0.05786591
+## 3    past  0.03250837
+## 4 require  0.02236535
+## 5  months  0.01475809
+## 
+## [[9]]
+##        token probability
+## 1     people  0.03209199
+## 2 procedures  0.02469326
+## 3        job  0.02191874
+## 4   policies  0.01482829
+## 5     person  0.01421173
+## 
+## [[10]]
+##           token probability
+## 1 opportunities  0.06929877
+## 2           job  0.04654001
+## 3         occur  0.04456099
+## 4  organization  0.03664490
+## 5    performing  0.03202718</code></pre>
+</div>
+<div id="output" class="section level2">
+<h2>Output</h2>
+<p>The model uncovers and organizes the topics inferred from the document corpus. The shapes represent topics, and terms are displayed within corresponding topic. The lines connecting terms represent the degree to which the terms occur together. Some of the themes that occur involve procedures and policies, pay, objectives, time, relationships, health and safety, and life.</p>
+<p>These themes can help us begin to understand the components of performance. Understanding the essence of performance is an important step in improving performance, which could increase both productivity and satisfaction. <img src="../../findings/biterm_markdown_files/figure-html/plot-1.png" width="672" /></p>
+</div>
+</div>
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+</main>
+
+        <footer id = "bigfooter">
+            <div style = "padding:15px;">
+                <p>Powered by <a href="https://gohugo.io">Hugo</a>. Themed by <a href="https://github.com/nathancday/min_night">min_night_dspg</a>. <a href="https://biocomplexity.virginia.edu/social-decision-analytics">Website by University of Virginia Biocomplexity Institute.</a>
+                </p>
+                <a rel="license" href="https://creativecommons.org/licenses/by/4.0/"
+                title="Creative Commons Attribution 4.0 International license">
+                <i class="fab fa-creative-commons" aria-hidden="true"></i> Attribution 4.0 International license
+                </a>
+            </div>
+        </footer>
+        
+        <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+          gtag('config', '');
+        </script>
+       
+    </body>
+
+</html>
+

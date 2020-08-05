@@ -21,7 +21,6 @@ library(dplyr)
 library(tidyverse)
 library(tidytext)
 library(stm)
-library(quanteda)
 library(ggplot2)
 library(readr)
 library(stringr)
@@ -30,6 +29,7 @@ library(wordcloud)
 library(readxl)
 library(gridExtra)
 library(DT)
+data(stop_words)
 
 ```
 
@@ -40,6 +40,8 @@ Once we compiled potential scale items, we extracted the scales from the collect
 ```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+
+nrc_sent <- read.csv("/project/class/bii_sdad_dspg/uva/dod_ari2/nrc_sentiment.csv")
 
 soldier_effective <- job_perf %>%
   filter(CITATION == "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
@@ -92,15 +94,13 @@ We also took a look at the most frequent words within the scales to verify that 
 ```{r tidy, echo=FALSE, message=FALSE, warning=FALSE}
 
 tidy_perf <- tibble(id = job_perf$id, text = job_perf$scale)
-data(stop_words)
 
 tidy_perf <- tidy_perf %>%
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
-  count(id, word, sort = TRUE)
+  count(word, sort = TRUE)
 
 tidy_perf %>%
-  count(word, sort = TRUE) %>%
   filter(n > 30) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word, n, fill = word)) +
@@ -135,7 +135,7 @@ tidy_perf %>%
 ```{r sentiment-analysis, echo=FALSE, message=FALSE, warning=FALSE}
 
 perf_sentiment <- tidy_perf %>%
-  inner_join(get_sentiments("nrc")) %>%
+  inner_join(nrc_sent) %>%
   count(word, sentiment, sort = TRUE) %>%
   ungroup()
 
