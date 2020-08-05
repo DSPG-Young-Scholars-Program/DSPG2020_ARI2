@@ -21,7 +21,6 @@ library(dplyr)
 library(tidyverse)
 library(tidytext)
 library(stm)
-library(quanteda)
 library(ggplot2)
 library(readr)
 library(stringr)
@@ -133,9 +132,10 @@ tidy_perf %>%
 ```
 
 ```{r sentiment-analysis, echo=FALSE, message=FALSE, warning=FALSE}
+nrc_sent <- get_sentiments("nrc")
 
 perf_sentiment <- tidy_perf %>%
-  inner_join(get_sentiments("nrc")) %>%
+  inner_join(nrc_sent) %>%
   count(word, sentiment, sort = TRUE) %>%
   ungroup()
 
