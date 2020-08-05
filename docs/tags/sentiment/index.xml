@@ -16,7 +16,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/performance_tidy_text/</guid>
-      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) library(readxl) job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) soldier_effective &amp;lt;- job_perf %&amp;gt;% filter(CITATION == &amp;quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp;amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION !</description>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we compiled potential scale items, we extracted the scales from the collection of papers on job performance. The following table displays the relevant scale items we have collected. Before we explored two different topic modeling approaches, we wanted to get a sense of the the content and sources of the scale items.</description>
     </item>
     
   </channel>
