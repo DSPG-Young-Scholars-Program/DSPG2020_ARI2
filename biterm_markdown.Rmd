@@ -1,0 +1,74 @@
+---
+title: "Biterm Modeling of Performance Scales"
+description: "A summary  of our approach to using BTM to uncover the themes of job performance scales. "
+tags: "text analysis", "topic modeling", "BTM", "biterms", "R"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{css, echo=FALSE}
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+## About BTM
+
+Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling,  each document is analyzed for topic occurences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with. BTM solves this problem by analyzing the entire corpus of documents together.
+
+BTM works by colleting information about biterms in the document corpus. A "biterm" is an unordered co-occurence of words. 
+
+Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. We hope to uncover common topics in performance scales using BTM techniques.
+
+```{r packages, include=FALSE, results=}
+library(readr)
+library(BTM)
+library(tidyverse)
+library(dplyr)
+library(tidytext)
+library(readxl)
+library(textplot)
+library(ggraph)
+library(concaveman)
+```
+
+```{r data, include=FALSE, results=}
+df <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
+                 sheet = "Performance Items")
+data <- df[-c(403:628),]
+```
+
+## Methods
+
+Here the model is defined. We kept the alpha and beta parameters standard to maintain a balance in the output between the number, specificity, and type of the topics. K was set to 10 to indicate that 10 topics should be identified.
+```{r model, echo = F}
+data <- data.frame(data$ITEM)
+data$ID <- seq.int(nrow(data))
+
+job_bi <- tibble(id = data$ID, text = data$data.ITEM)
+
+tidy_bi <- job_bi %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+
+model  <- BTM(tidy_bi, k = 10, alpha = 5, beta = 0.1,
+              iter = 1000, window = 7)
+model
+```
+
+Biterms used in the model are displayed.
+```{r biterms, echo=F, paged.print=TRUE}
+terms(model,type = "biterms")
+```
+
+## Output
+
+The model uncovers and organizes the topics inferred from the document corpus. The shapes represent topics, and terms are displayed within corresponding topic. The lines connecting terms represent the degree to which the terms occur together. Some of the themes that occur involve procedures and policies, pay, objectives, time, relationships, health and safety, and life.
+
+These themes can help us begin to understand the components of performance. Understanding the essence of performance is an important step in improving performance, which could increase both productivity and satisfaction.
+```{r plot, echo = F}
+plot(model, top_n = 5)
+```
+
