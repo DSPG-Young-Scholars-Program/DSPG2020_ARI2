@@ -101,7 +101,7 @@ tidy_perf <- tidy_perf %>%
   count(word, sort = TRUE)
 
 tidy_perf %>%
-  #filter(n > 30) %>%
+  filter(n > 30) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word, n, fill = word)) +
   geom_col(show.legend = FALSE) +

@@ -19,9 +19,9 @@ In order to provide our stakeholder, the [Army Research Institute](https://ari.a
 ```{r packages, message = FALSE, warning = FALSE, echo=FALSE}
 rm(list = ls())
 # load packages 
-for (pkg in c("tidyverse", "igraph", "visNetwork", "data.table", "R.utils", "DT", "RPostgreSQL", "cowplot", "maditr", "stringr", "stringi", "gridExtra","readxl")) {library(pkg, character.only = TRUE)}
+for (pkg in c("tidyverse", "igraph", "visNetwork", "data.table", "R.utils", "DT", "cowplot", "maditr", "stringr", "stringi", "gridExtra","readxl")) {library(pkg, character.only = TRUE)}
 
-documentTablePath <- "/home/dnb3k/git/DSPG2020_ARI2/dataSource/DocumentSheetOnly.xlsx"
+documentTablePath <- "~/git/DSPG2020_ARI2/dataSource/DocumentSheetOnly.xlsx"
 
 documentTable <- read_excel(documentTablePath)
 

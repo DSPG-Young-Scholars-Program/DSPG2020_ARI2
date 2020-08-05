@@ -1,11 +1,10 @@
 ---
 title: "Biterm Modeling of Performance Scales"
-description: "A summary  of our approach to using BTM to uncover the themes of job performance scales. "
-tags: "text analysis", "topic modeling", "BTM", "biterms", "R"
-output:
-  pdf_document: default
-  html_document: default
+description: "A summary  of our approach to using BTM to uncover the themes of job performance scales."
+tags: ["R", "text analysis", "topic models", "BTM", "biterms"]
+output: html_document
 ---
+
 
 ```{css, echo=FALSE}
 /* this chunk of code centers all of the headings */
@@ -22,7 +21,7 @@ BTM works by colleting information about biterms in the document corpus. A "bite
 
 Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. We hope to uncover common topics in performance scales using BTM techniques.
 
-```{r packages, include=FALSE, results=}
+```{r packages, message=FALSE, warning=FALSE, include=FALSE}
 library(readr)
 library(BTM)
 library(tidyverse)
@@ -34,16 +33,18 @@ library(ggraph)
 library(concaveman)
 ```
 
-```{r data, include=FALSE, results=}
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+
 df <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
                  sheet = "Performance Items")
+
 data <- df[-c(403:628),]
 ```
 
 ## Methods
 
 Here the model is defined. We kept the alpha and beta parameters standard to maintain a balance in the output between the number, specificity, and type of the topics. K was set to 10 to indicate that 10 topics should be identified.
-```{r model, echo = F}
+```{r model, echo=FALSE, message=FALSE, warning=FALSE}
 data <- data.frame(data$ITEM)
 data$ID <- seq.int(nrow(data))
 
@@ -58,9 +59,11 @@ model  <- BTM(tidy_bi, k = 10, alpha = 5, beta = 0.1,
 model
 ```
 
-Biterms used in the model are displayed.
-```{r biterms, echo=F, paged.print=TRUE}
-terms(model,type = "biterms")
+
+```{r biterms, echo=TRUE, paged.print=TRUE}
+
+#terms(model,type = "biterms")
+terms(model)
 ```
 
 ## Output
