@@ -11,6 +11,24 @@
     
     
     <item>
+      <title>Exploring Job Performance Scales</title>
+      <link>/findings/performance_tidy_text/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_tidy_text/</guid>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we compiled potential scale items, we extracted the scales from the collection of papers on job performance. The following table displays the relevant scale items we have collected. Before we explored two different topic modeling approaches, we wanted to get a sense of the the content and sources of the scale items.</description>
+    </item>
+    
+    <item>
+      <title>Job Performance Scales: LDA Topic Modeling</title>
+      <link>/findings/performance_lda/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/findings/performance_lda/</guid>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words.</description>
+    </item>
+    
+    <item>
       <title>ARI Individual Performance 2020 Summer Project</title>
       <link>/methods/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -38,22 +56,12 @@
     </item>
     
     <item>
-      <title>Exploring Job Performance Scales</title>
-      <link>/findings/performance_tidy_text/</link>
+      <title>Biterm Modeling of Performance Scales</title>
+      <link>/findings/biterm_markdown/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/findings/performance_tidy_text/</guid>
-      <description>Tidy Text Analysis for Job Performance Scales library(dplyr) library(tidyverse) library(tidytext) library(stm) library(quanteda) library(ggplot2) library(readr) library(stringr) library(reshape2) library(wordcloud) library(readxl) job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) soldier_effective &amp;lt;- job_perf %&amp;gt;% filter(CITATION == &amp;quot;Borman, W. C., Motowidlo, S. J., Rose, S. R., &amp;amp; Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION !</description>
-    </item>
-    
-    <item>
-      <title>Job Performance Scales: LDA Topic Modeling</title>
-      <link>/findings/performance_lda/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/findings/performance_lda/</guid>
-      <description>Data Setup This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale.
-job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION != &amp;quot;Borman, W.</description>
+      <guid>/findings/biterm_markdown/</guid>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  About BTM Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling, each document is analyzed for topic occurences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with.</description>
     </item>
     
   </channel>

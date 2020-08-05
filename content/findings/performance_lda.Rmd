@@ -1,1 +1,186 @@
-../../src/lda/performance_lda.Rmd
+---
+title: "Job Performance Scales: LDA Topic Modeling"
+description: "This page demonstrates an LDA Topic Modeling approach to our corpus."
+tags: ["R", "text analysis", "topic models", "LDA"]
+weight: 2
+draft: false
+output: html_document
+---
+```{css, echo=FALSE}
+/* this chunk of code centers all of the headings */
+h1, h2, h3 {
+  text-align: center;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+library(stm)
+library(quanteda)
+library(ggplot2)
+library(readr)
+library(readxl)
+library(data.table)
+library(DT)
+set.seed(2020)
+```
+
+## Approach
+
+Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words. Using Dirichlet probability distribution, the model draws out the implicit themes across a set of documents. We choose LDA because it is a more commonly used topic modeling process which members of the team had some familiarity with. For this particular implementation of LDA, we used the [STM package in R](http://www.luigicurini.com/uploads/6/7/9/8/67985527/stmvignette.pdf). The goal was to see if the latent topics identified by the model were related to performance or the indicators of performance as outlined in [Koopmans et al](https://www.researchgate.net/publication/51508445_Conceptual_Frameworks_of_Individual_Work_Performance).  
+
+```{r read-data, include=FALSE}
+
+job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+
+job_perf <- job_perf %>%
+  filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
+
+#Grouping by scale source/citation if we want to consider texts as documents
+cols <- c('STEM', 'ITEM')
+job_perf$scale <- apply( job_perf[ , cols ], 1 , paste, collapse = " ")
+job_perf$scale <- gsub("NA",' ', job_perf$scale)
+
+job_perf <- job_perf %>%
+  group_by(CITATION, SCALE_NAME, SOURCE_DOMAIN, YEAR) %>%
+  summarise(scale = paste0(scale, collapse = " "))
+```
+
+## Choosing our Parameters 
+At this particular stage in the process, LDA may not be the most appropriate method, as it is works best with larger datasets. We are seeking, at this point, to demonstrate that with a larger corpus of job performance scales, this approach could lead valuable results. Because of our limited dataset, we took certain steps to make our corpus as large as possible. Typically, a standard set of stop words are removed from the corpus. Stop words are extremely common words which help to form the structure of sentences, but do not inform the content. We did not want to remove this standard stopwords list for two reasons. First, to maximize our corpus, and second, to include pronouns such as "I" and "You" which provide some information about the wording of scale items and the level of analysis. To construct our own stopwords list, we looked at the most frequent words in the dataset. 
+
+```{r word-frequencies, message=FALSE, warning=FALSE, echo=FALSE}
+tidy_perf <- tibble(text = job_perf$scale)
+
+tidy_perf <- tidy_perf %>%
+ unnest_tokens(word, text) %>%
+ count(word, sort = TRUE)
+
+tidy_perf %>%
+  filter(n > 100) %>%
+  datatable()
+
+tidy_perf %>%
+   count(word, sort = TRUE) %>%
+   filter(n > 100) %>%
+   mutate(word = reorder(word, n)) %>%
+   ggplot(aes(word, n, fill = word)) +
+   geom_col(show.legend = FALSE) +
+   xlab(NULL) +
+   coord_flip() +
+   ggtitle("Highest Frequency Words in Job Performance Scales")
+
+``` 
+
+Along with the most frequent words, we also included as stop words words refering to specific jobs within the performance scales. These included a number of scales which referred to nursing and hospitals along with locations, such as Britain and Newfoundland. 
+
+```{r pre-processing, message=FALSE, warning=FALSE, include=FALSE}
+
+stop.words <- c("the", "to", "of", "a", "an", "for", "and", "nor", "but", "or", "yet", "so", "either", "or", "both", "if", "as", "than", "how", "that", "this", "whatever", "which", "whichever", "where", "wherever", "it", "at", "like", "are", "from", "do", "andor", "goran", "nurse", "nursing", "nurses", "patient", "hospital", "newfoundland", "britain", "on", "patient", "patients", "in", "am", "is", "was", "with", "be")
+
+processed.scale <- textProcessor(documents = job_perf$scale, metadata = job_perf, lowercase = TRUE, 
+                                 removestopwords = FALSE, removenumbers = TRUE,
+                                 removepunctuation = TRUE, ucp = TRUE, stem = FALSE,
+                                 wordLengths = c(0, Inf), sparselevel = 1, language = "en",
+                                 verbose = FALSE, onlycharacter = FALSE, striphtml = FALSE,
+                                 customstopwords = stop.words, custompunctuation = NULL, v1 = FALSE)
+
+out.scale <- prepDocuments(processed.scale$documents, vocab = processed.scale$vocab,
+                           meta = processed.scale$meta, lower.thresh = 0, upper.thresh = Inf, 
+                           verbose = FALSE)
+
+```
+
+##Number of Topics
+
+In LDA topic modeling, the user inputs the number of topics for the model. Choosing this number of topics can be difficult, but the STM package provides some guidance and different tools for the evaluation of potential numbers of topics. Typically, the main measure of the strength of the model and the desired number of topics is semantic coherence. In addition to semantic coherence, STM also recommends using held-out likelihood, residuals, and exclusivity as measures of model fit. These graphs show the values of those variables on 10 LDA models, with the number of topics ranging from 6 to 24. 
+
+
+```{r kresult, message=FALSE, warning=FALSE, include=FALSE}
+
+kresult <- searchK(out.scale$documents, out.scale$vocab, init.type = "LDA", 
+                   K = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24), seed = 2020, data = out.scale$meta, 
+                   verbose = TRUE) 
+
+```
+
+```{r kresult-plot, echo=FALSE, message=FALSE, warning=FALSE}
+plot(kresult) 
+
+kresult$results %>%
+  select(K, exclus, semcoh) %>%
+  filter(K %in% c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24)) %>%
+  unnest(cols = c(K, exclus, semcoh)) %>%
+  mutate(K = as.factor(K)) %>%
+  ggplot(aes(semcoh, exclus, colour = K)) +
+  geom_point(size = .01, alpha = 0.7) +
+  geom_text(aes(label = K)) +
+  labs(x = "Semantic coherence",
+       y = "Exclusivity",
+       title = "Comparing exclusivity and semantic coherence")
+
+```
+
+
+An ideal model would have a high held-out likelihood, a low level of residuals, and a combination of high semantic coherence and exclusivity. STM recommends looking at semantic coherence by exlcusivtity because semantic coherenence can be "artifically" achieved with very common words amoung topics. 
+
+##Fittting the model
+
+When using STM with LDA modeling, STM recommends running a model selection process. With the number of topics chosen from the model above, multiple attempts at LDA to find the most ideal model based again on semantic coherence and exclusivity of topics. 
+
+```{r model-select, message=FALSE, warning=FALSE, include=FALSE}
+
+modelSelect <- selectModel(out.scale$documents, out.scale$vocab, K = 12,
+                          max.em.its = 200, data = out.scale$meta, runs = 20, init.type = "LDA", 
+                          seed = 2020, verbose = FALSE)
+
+perf_model <- modelSelect$runout[[1]] 
+
+```
+
+```{r model-select-output, echo=FALSE, message=FALSE, warning=FALSE}
+plotModels(modelSelect)
+```
+
+With the best model, the one with the highest exclusivity and semantic coherence, closest to the top right corner of the graph, chosen, we can then visualize the topic model results. 
+
+##Visualizations of the Topic Model
+
+The outputs from the topic model reveal some of the latent themes in the job performance scales. We can start to see some themes being pulled out, such as ideal job characteritics, feelings about supervisors, satisfaction, and working in groups. 
+
+
+```{r model-output, echo=FALSE, message=FALSE, warning=FALSE}
+
+labelTopics(perf_model)$frex -> perf_topics
+datatable(perf_topics)
+
+#topicQuality(perf_model, out.scale$documents)
+
+#mod.out.corr <- topicCorr(perf_model)
+#plot(mod.out.corr, topic.names = c("w/ Others:", "Opportunities", "Available Tools:", "Relations w/ Supervisor:", "Job Characteristics:", "Opportunities & Feelings:", "Describe Work:", "Performance:"))
+
+plot(perf_model, type = "summary", xlim = c(0, 2), labeltype = "frex", n = 5) #, topic.names = c("w/ Others:", "Opportunities:", "Available Tools:", "Relations w/ Supervisor:", "Job Characteristics:", "Satisfaction:", "Describe Work:", "Performance:"))
+
+#findThoughts(perf_model, texts = job_perf$scale)
+
+wordclouds <- function(model, topic) {
+  cloud(model, topic = topic, max.words = 40, scale = c(2, .75))
+}
+
+par(mfrow = c(1,2))
+
+topicnum <- 1:12
+for (i in topicnum) {
+  wordclouds(perf_model, i)
+}
+
+```
+
+##Conclusion
+
+Although we do not necessarily see clearly all aspects of the job performace frameworks in every topic, some have started to emerge from this technique. With the further compliation of scales and the growth of the dataset, these techiques would likely yield valuable results in the development of a framework of job performance specifically for the Army. 
+
+

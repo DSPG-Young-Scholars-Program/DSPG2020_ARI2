@@ -16,8 +16,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/performance_lda/</guid>
-      <description>Data Setup This is the part where I am importing the data. I choose to combine the STEM and the ITEM so both parts of the scale were included. I also collapse the scales by citation, so each document is a full scale rather than a part of a scale.
-job_perf &amp;lt;- read_excel(&amp;quot;/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx&amp;quot;, sheet = &amp;quot;Performance Items&amp;quot;) job_perf &amp;lt;- job_perf %&amp;gt;% filter(CITATION != &amp;quot;Borman, W.</description>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words.</description>
     </item>
     
   </channel>

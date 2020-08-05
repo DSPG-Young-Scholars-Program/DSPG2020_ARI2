@@ -3,6 +3,14 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/findings/performance_tidy_text/</loc>
+  </url>
+  
+  <url>
+    <loc>/findings/performance_lda/</loc>
+  </url>
+  
+  <url>
     <loc>/methods/</loc>
   </url>
   
@@ -15,19 +23,23 @@
   </url>
   
   <url>
+    <loc>/findings/biterm_markdown/</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/biterms/</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/btm/</loc>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
   </url>
   
   <url>
-    <loc>/findings/performance_tidy_text/</loc>
-  </url>
-  
-  <url>
     <loc>/findings/</loc>
-  </url>
-  
-  <url>
-    <loc>/findings/performance_lda/</loc>
   </url>
   
   <url>
@@ -52,6 +64,10 @@
   
   <url>
     <loc>/tags/tidytext/</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/topic-modeling/</loc>
   </url>
   
   <url>
