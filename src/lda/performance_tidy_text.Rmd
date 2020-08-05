@@ -40,6 +40,8 @@ Once we compiled potential scale items, we extracted the scales from the collect
 
 job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
+nrc_sent <- read.csv("/project/class/bii_sdad_dspg/uva/dod_ari2/nrc_sentiment.csv")
+
 soldier_effective <- job_perf %>%
   filter(CITATION == "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
 
@@ -132,7 +134,6 @@ tidy_perf %>%
 ```
 
 ```{r sentiment-analysis, echo=FALSE, message=FALSE, warning=FALSE}
-nrc_sent <- get_sentiments("nrc")
 
 perf_sentiment <- tidy_perf %>%
   inner_join(nrc_sent) %>%
