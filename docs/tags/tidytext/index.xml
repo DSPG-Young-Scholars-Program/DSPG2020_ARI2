@@ -16,7 +16,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/performance_tidy_text/</guid>
-      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we compiled potential scale items, we extracted the scales from the collection of papers on job performance. The following table displays the relevant scale items we have collected. Before we explored two different topic modeling approaches, we wanted to get a sense of the the content and sources of the scale items.</description>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we compiled a collection of papers addressing job performance, we extracted scales from those that contained measurement items. The following table displays the scales we collected. Before we began topic modeling, we wanted to get a sense of the sources and content of the scale items.</description>
     </item>
     
   </channel>
