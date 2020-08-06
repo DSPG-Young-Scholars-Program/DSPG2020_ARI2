@@ -1,6 +1,6 @@
 ---
-title: "Job Performance Scales: LDA Topic Modeling"
-description: "This page demonstrates an LDA Topic Modeling approach to our corpus."
+title: "Latent Dirichlet Allocation Modeling of Performance Scales"
+description: "A summary  of our approach to using LDA to uncover the themes of performance scales."
 tags: ["R", "text analysis", "topic models", "LDA"]
 weight: 2
 draft: false
@@ -47,7 +47,7 @@ job_perf <- job_perf %>%
 ```
 
 ## Choosing our Parameters 
-LDA works best with larger data sets, which presented a challenge for us. We took steps to optimize the size of our corpus for analysis. Typically, a standard set of stop words are removed from the corpus. Stop words are extremely common words which help to form the structure of sentences but do not inform the content. We did not remove these standard stop words for two reasons. First, to maximize our corpus. Second, because including pronouns such as "I" and "You" provides valuable conceptual information about the scale items, such as the level of analysis. Instead, we constructed a custom stop words list by examining the most frequent words in our dataset. 
+LDA works best with larger data sets, which presented a challenge for us. We took steps to optimize the size of our corpus for analysis. Typically, a standard set of stop words are removed from the corpus. Stop words are extremely common words which help to form the structure of sentences but do not inform the content. We did not remove these standard stop words for two reasons. First, to maximize our corpus. Second, because including pronouns such as "I" and "You" provides valuable conceptual information about the scale items, such as the level of analysis. Instead, we constructed a custom stop words list by examining the most frequent words in our data set. 
 
  
 
@@ -167,7 +167,7 @@ plot(perf_model, type = "summary", xlim = c(0, 2), labeltype = "frex", n = 5) #,
 #findThoughts(perf_model, texts = job_perf$scale)
 ```
 
-One way to visualize and understand topics in through wordclouds. The graphs below represent wordcloud clusters for each of the topics. The size of the word relates to how frequently it is represented in the topic. 
+One way to visualize and understand topics in through word clouds. The graphs below represent word cloud clusters for each of the topics. The size of the word relates to how frequently it is represented in the topic. 
 
 
 ```{r wordclouds, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
