@@ -16,7 +16,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/performance_lda/</guid>
-      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we gathered a corpus of scales from a variety of sources, we wanted to be able to analyze these scales cohesively. Latent Dirichlet Allocation (LDA) is a probabalistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words.</description>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Approach Once we gathered a sufficient number of scales from a variety of sources, we analyzed these scales using topic modeling to identify underlying themes from across the corpus. Latent Dirichlet Allocation (LDA) is a probabilistic topic modeling process which considers each document as a distribution of topics and each topic as a distribution of words.</description>
     </item>
     
   </channel>

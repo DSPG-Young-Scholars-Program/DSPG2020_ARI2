@@ -15,11 +15,11 @@ h1, h2, h3 {
 
 ## About BTM
 
-Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling,  each document is analyzed for topic occurences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with. BTM solves this problem by analyzing the entire corpus of documents together.
+Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling,  each document is analyzed for topic occurrences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with. BTM solves this problem by analyzing the entire corpus of documents together.
 
-BTM works by colleting information about biterms in the document corpus. A "biterm" is an unordered co-occurence of words. 
+BTM works by collecting information about biterms in the document corpus. A "biterm" is an unordered co-occurrence of words. 
 
-Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. We hope to uncover common topics in performance scales using BTM techniques.
+Our data consists of individual items taken from performance evaluation scales. Since each item is the length of a sentence, we decided it would be appropriate to apply BTM to our data. 
 
 ```{r packages, message=FALSE, warning=FALSE, include=FALSE}
 library(readr)
@@ -31,6 +31,8 @@ library(readxl)
 library(textplot)
 library(ggraph)
 library(concaveman)
+library(DT)
+set.seed(2020)
 ```
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
@@ -44,6 +46,7 @@ data <- df[-c(403:628),]
 ## Methods
 
 Here the model is defined. We kept the alpha and beta parameters standard to maintain a balance in the output between the number, specificity, and type of the topics. K was set to 10 to indicate that 10 topics should be identified.
+
 ```{r model, echo=FALSE, message=FALSE, warning=FALSE}
 data <- data.frame(data$ITEM)
 data$ID <- seq.int(nrow(data))
@@ -60,18 +63,30 @@ model
 ```
 
 
-```{r biterms, echo=TRUE, paged.print=TRUE}
+```{r biterms, echo=FALSE, message=FALSE, warning=FALSE}
 
-#terms(model,type = "biterms")
-terms(model)
+termsHold <- terms(model,type = "biterms")
+termsTable <- termsHold[["biterms"]]
+   datatable(termsTable)
 ```
 
 ## Output
 
-The model uncovers and organizes the topics inferred from the document corpus. The shapes represent topics, and terms are displayed within corresponding topic. The lines connecting terms represent the degree to which the terms occur together. Some of the themes that occur involve procedures and policies, pay, objectives, time, relationships, health and safety, and life.
+The model uncovers and organizes the topics inferred from the document corpus. The shapes represent topics, and terms associated with a topic are displayed within the corresponding shape. The lines connecting terms represent the degree to which the terms occur together. 
 
-These themes can help us begin to understand the components of performance. Understanding the essence of performance is an important step in improving performance, which could increase both productivity and satisfaction.
-```{r plot, echo = F}
+The model reveals themes involving:
+* Company policies (yellow diamond)
+* Objectives
+* Time (blue triangle)
+* Relationships
+* Health and Safety (teal diamond)
+*Life
+
+```{r plot, echo=FALSE, message=FALSE, warning=FALSE}
 plot(model, top_n = 5)
 ```
+
+##Conclusions
+
+These themes help understand the component of performance and how people assess performance across a broad sampling of occupations. We can see that, in addition to what people do in a job (e.g., the skills that they employ) other important factors involve their feelings towards the organization of which they are a part, having opportunities to grow, how they communicate with their supefvisors, and the ability to provide feedback. Understanding the essence of performance and how it is measured is an important first step towards capturing (and ultimately improving) performance in the United States Army. 
 

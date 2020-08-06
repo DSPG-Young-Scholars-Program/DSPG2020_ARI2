@@ -16,7 +16,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/findings/biterm_markdown/</guid>
-      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  About BTM Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling, each document is analyzed for topic occurences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with.</description>
+      <description>/* this chunk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  About BTM Biterm Topic Modeling (BTM) is a method of detecting the topics occurring in short texts. In other approaches to topic modeling, each document is analyzed for topic occurrences within that document. The challenge with applying traditional topic modeling techniques to short documents is that there is not enough data to work with.</description>
     </item>
     
   </channel>

@@ -25,7 +25,9 @@ documentTablePath <- "~/git/DSPG2020_ARI2/dataSource/DocumentSheetOnly.xlsx"
 
 documentTable <- read_excel(documentTablePath)
 
-datatable(documentTable)
+documentTable[, -c(6,7, 10, 11)] %>%
+  datatable()
+
 ```
 
 Having achived this, we now needed to extract the individual assesment items (i.e. "questions") from each of these documents so that the terms *explicitly* used in the assesment items (and, presumably, the latent variables they correspond to) could be subjected to analysis.  Furethermore, in order to maximally facilitate secondary analysis, additional characteristics were manually ascribed to the assesment items, based on a number of criteria.  Thus, our second goal was: 
@@ -36,16 +38,11 @@ With the assesment items extracted, we then needed to determine what common topi
 
 >Perform a text analysis on the extracted items, and attempt to characterize the topic groups and their relations
 
-With the litterature's themes now avaiable to us, we would next be able to map these back on to the data collection tools used by the military.  Thus our fourth and final goal was:
+These preliminary topic modeling results can be seen under the 'Findings Tab' on our website. Due to the limitations of the size of the corpus gathered by the team this summer, we only set out to establish topic modeling as a viable technique for future work. 
+
+With the literature's themes avaiable, we would next be able to map these back on to the data collection tools used by the military.  Thus our fourth and final goal was:
 
 >Time permitting, compare these groups to assessment items and tools used by the military in order to assess overlap and determine suitability of those items for potential application to military personnel. 
 
-<center>
+With a larger corpus of performance scales, the code developed by the team this summer could be adapted to meet this goal. 
 
-##### [Visualizations go about here.] 
-
-</center>
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in varius purus. Nullam ut sodales ante. Fusee justo nisi, suscipit a lacus et, posuere sagittis ex. Nulla convallis ante elit, at consequat ipsum ultricies ut. Aliquam erat volutpat. nderline. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in variu convallis ante elit, at consequat ipsum ultricies ut.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in varius purus. Nullam ut sodales ante. Fusee justo nisi, suscipit a lacus et, posuere sagittis ex. Nulla convallis ante elit, at consequat ipsum ultricies ut. Aliquam erat volutpat. nderline. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in variu convallis ante elit, at consequat ipsum ultricies ut.

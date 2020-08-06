@@ -35,7 +35,7 @@ data(stop_words)
 
 ## Approach
 
-Once we compiled potential scale items, we extracted the scales from the collection of papers on job performance. The following table displays the relevant scale items we have collected. Before we explored two different topic modeling approaches, we wanted to get a sense of the the content and sources of the scale items. In order to do this, we explored tidytext methods of text analysis, many of which come from [Text Mining with R](https://www.tidytextmining.com). 
+Once we compiled a collection of papers addressing job performance, we extracted scales from those that contained measurement items. The following table displays the scales we collected. Before we began topic modeling, we wanted to get a sense of the sources and content of the scale items. We utilized tidytext methods of text analysis, many of which come from [Text Mining with R](https://www.tidytextmining.com). 
 
 ```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -64,7 +64,7 @@ job_perf[, -c(5,6)] %>%
   datatable()
 ```
 
-Our scales come from a range of years, but mainly come from the last thirty to forty years. Most of the scales come from academic sources, but there are also some from military and government sources. There were a number of industry or commericial sources which exist, but many were not availiable to us for the purpose of this analysis due to a paywall. 
+Our scales cover a wide range of years, but the majority come from the last 30 to 40 years. Most are from academic sources, but there are also some military and government sources represented. We found number of industry or commercial sources, but many were not available to us due to a paywall.
 
 ```{r eda, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -89,7 +89,7 @@ grid.arrange(scale_yr, scale_domains, nrow = 1)
 
 ##Words in Scales
 
-We also took a look at the most frequent words within the scales to verify that the scales that had been collected were, in fact, related to word and performance. These plots have the most common words which don't add content, stop words, removed. We see that job is, by far, the most frequent word within the scales, but we also see a number of other words which we would expect such as organization, supervisor, and performance. Feel being the second most common word tells us that many of the scales are likely asking about perceptions about the work environment. 
+We calculated the most frequently occurring words within the scales to verify that they were designed to measure work and performance. These plots show the most common words after stop words (i.e., commonly occuring words that do not add to the content or contribute to topic meaning, such as: by, if, several, most) were removed. We see that 'job' appears the most frequently within the scales, alongside other words that we would expect such as 'organization', 'supervisor', and 'performance'. The second most common word is 'feel', which tells us that many of the scales likely ask about people's perceptions of their work environment. 
 
 ```{r tidy, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -113,7 +113,7 @@ tidy_perf %>%
 
 ##Sentiment Analysis
 
-We were also curious to see the sentiments contained within the job performance scales. That is, were the scales measuing respones to more negative questions and statement or more positive questions are statements. Within the dataset, using a standard sentiment dictionary, we determined that there were 449 negative words and 491 positive words, so in terms of positive and negative sentiment, they appear to be about equal. However, we can also look at a more nuanced division of sentiments. 
+We also examined the sentiments contained within the job performance scales. Do the scales contain more negative questions and statements or more positive questions and statements? Using a standard sentiment dictionary, we determined that there were 449 negative words and 491 positive words, they appear apporximately equal in terms of positive and negative sentiment. However, we can also look at a more nuanced division of sentiments. 
 
 ```{r sentiment-counts, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -165,12 +165,11 @@ perf_sentiment %>%
 ```
 
 
-
-Positive, trust, suprise, anticipation, and joy seem to have the most weight within these measures of sentiment. Although, we do notice that the sentiment dictionaries rate 'organization' as a positive word within suprise, trust, joy, anticipation, and positive. This may not be referring to the same 'organization' that our job performance scales are referring to. 
+Positive, trust, surprise, anticipation, and joy have the most weight within these measures of sentiment. While sentiment dictionaries rate 'organization' as a positive word alongside surprise, trust, joy, and anticipation, we believe this may refer to the quality of 'being organized' rather than an organization as a collection of people. 
 
 ##Collected Scales and Existing Army Measurement
 
-We did have one scale item which came from the Army, but it was very specific to the Army, specifically soldier, performance context with scale items such as, "While stationed in Germany, this soldier spent non-duty hours establishing a German-American Club to improve community relations" (Borman et al 1987). Although we did not include this item in our topic modeling, we were interested in the differences between this items and our collected scales. A comparison of the two words between the existing frameworks shows that the content is rather different between the two items. 
+We found one scale specifically designed to assess Army performance, with scale items such as, "While stationed in Germany, this soldier spent non-duty hours establishing a German-American Club to improve community relations" (Borman et al 1987). Because of how significant;y this scale appeared to diverge in content from the other scales we had collected, we compared the word frequency between the two types(i.e. the Army-specific and the non-Army). 
 
 ```{r scales-v-army, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -213,4 +212,4 @@ joined %>%
 
 ##Conclusion
 
-As there are great differences between the job performance scales and the existing Army measurement, our decision not to include in our future topic modeling analysis seems correct for the moment. Our collected scales do seem to be connected to job performance and other facets of work satisfaction and relationships with organizations and supervisors. Keep exploring this website to see our topic model analysis. 
+The distribution of word frequencies confirmed that the two types of scales largely used different terms. As a result, we did not include the Army-specific scale in our topic modeling. However, out other scales do contain words pertinent to job performance and related facets(e.g. work satisfaction, relationships with organizations and supervisors). Keep exploring this website to see our topic model analysis. 
