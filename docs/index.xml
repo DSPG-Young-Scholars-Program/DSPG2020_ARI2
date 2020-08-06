@@ -20,7 +20,7 @@
     </item>
     
     <item>
-      <title>Job Performance Scales: LDA Topic Modeling</title>
+      <title>Latent Dirichlet Allocation Modeling of Performance Scales</title>
       <link>/findings/performance_lda/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -34,7 +34,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/methods/</guid>
-      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Data and Methods In order to provide our stakeholder, the Army Research Institute, with pertinant insight regarding the fesability of predicting behavioral performance using existing data sources we must first identify existing authoratative behavioral performance items from academic, industry, government and military sources. In essence, the collection of this corpus of documents will serve as the basis from which a consensus regarding themes and topics relating to behavioral performance will be extracted.</description>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Data and Methods In order to provide our stakeholder, the Army Research Institute, with pertinent insight regarding the feasibility of predicting behavioral performance using existing data sources we must first identify existing authoritative behavioral performance items from academic, industry, government and military sources. In essence, the collection of this corpus of documents will serve as the basis from which a consensus regarding themes and topics relating to behavioral performance will be extracted.</description>
     </item>
     
     <item>
@@ -43,7 +43,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/overview/</guid>
-      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Project Overview According to the Data Manpower Data Center (DMDC) the United States Army approximately 475 thousand active duty, and approximately 190 thousand reserve, service members. As part of its standard personnel management practices it collects a number of measures and/or surveys from and about these service members. Given the scope, depth, duration of this data source, the U.</description>
+      <description>/* this chunnk of code centers all of the headings */ h1, h2, h3 { text-align: center; }  Project Overview According to the Data Manpower Data Center (DMDC) the United States Army employs approximately 475 thousand active duty, and approximately 190 thousand reserve, service members. As part of its standard personnel management practices it collects a number of measures and/or surveys from and about these service members. Given the scope, depth, duration of this data source, the U.</description>
     </item>
     
     <item>
