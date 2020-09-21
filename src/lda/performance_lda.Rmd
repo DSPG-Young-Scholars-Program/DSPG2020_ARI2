@@ -31,7 +31,8 @@ Once we gathered a sufficient number of scales from a variety of sources, we ana
 
 ```{r read-data, include=FALSE}
 
-job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+# job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+job_perf <- read_excel("../../data/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
 
 job_perf <- job_perf %>%
   filter(CITATION != "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
@@ -168,6 +169,7 @@ plot(perf_model, type = "summary", xlim = c(0, 2), labeltype = "frex", n = 5) #,
 ```
 
 One way to visualize and understand topics in through word clouds. The graphs below represent word cloud clusters for each of the topics. The size of the word relates to how frequently it is represented in the topic. 
+
 
 
 ```{r wordclouds, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}

@@ -5,7 +5,6 @@ tags: ["R", "text analysis", "topic models", "BTM", "biterms"]
 output: html_document
 ---
 
-
 ```{css, echo=FALSE}
 /* this chunk of code centers all of the headings */
 h1, h2, h3 {
@@ -37,7 +36,9 @@ set.seed(2020)
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
 
-df <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
+# df <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
+#                  sheet = "Performance Items")
+df <- read_excel("../../data/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",
                  sheet = "Performance Items")
 
 data <- df[-c(403:628),]

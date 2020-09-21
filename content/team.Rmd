@@ -17,7 +17,7 @@ h1, h2, h3 {
 ### ARI2 2020 DSPG Team Members 
 
 <center>
-![](/dan.png) ![](/liz.png) ![](/gina.png)
+![](/DSPG2020_ARI2/dan.png) ![](/DSPG2020_ARI2/liz.png) ![](/DSPG2020_ARI2/gina.png)
 </center>
 
 ##### [Daniel Bullock (Indiana University, Computational Neuroanatomy)](https://github.com/DanNBullock), [Elizabeth Miller (William & Mary, International Relations/History)](https://github.com/lizhmil), and [Gina Fendley (Marymount Univeristy, Philsophy)](https://github.com/gina-fendley) {style=text-align:center}
@@ -27,7 +27,7 @@ h1, h2, h3 {
 
 <center>
 
-![](/nat.jpg) ![](/joel.jpg)
+![](/DSPG2020_ARI2/nat.jpg) ![](/DSPG2020_ARI2/joel.jpg)
 
 </center>
 

@@ -33,15 +33,20 @@ data(stop_words)
 
 ```
 
+
 ## Approach
 
 Once we compiled a collection of papers addressing job performance, we extracted scales from those that contained measurement items. The following table displays the scales we collected. Before we began topic modeling, we wanted to get a sense of the sources and content of the scale items. We utilized tidy text methods of text analysis, many of which come from [Text Mining with R](https://www.tidytextmining.com). 
 
 ```{r add-data, echo=FALSE, message=FALSE, warning=FALSE}
 
-job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+# job_perf <- read_excel("/project/class/bii_sdad_dspg/uva/dod_ari2/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+# 
+# nrc_sent <- read.csv("/project/class/bii_sdad_dspg/uva/dod_ari2/nrc_sentiment.csv")
 
-nrc_sent <- read.csv("/project/class/bii_sdad_dspg/uva/dod_ari2/nrc_sentiment.csv")
+job_perf <- read_excel("../../data/DSPG-ARI2 -- Performance Item and Scale Database.xlsx",  sheet = "Performance Items")
+
+nrc_sent <- read.csv("../../data/nrc_sentiment.csv")
 
 soldier_effective <- job_perf %>%
   filter(CITATION == "Borman, W. C., Motowidlo, S. J., Rose, S. R., & Hanser, L. M. (1987). Development of a Model of Soldier Effectiveness: Retranslation Materials and Results. HUMAN RESOURCES RESEARCH ORGANIZATION ALEXANDRIA VA.")
